@@ -1,0 +1,7 @@
+This file will state the usages of generative AI for the purposes of this project in order of usage. 
+
+
+3/7/25 - Mason 
+Questioned chatGPT regarding dynamically loading new html with single page applications. 
+I did not give it the code i had so it did not write it for me,
+but i based my solution on its example code to create my load_html function found in public/app.js. 
