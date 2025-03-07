@@ -1,5 +1,7 @@
 .vscode 
 
+doc/requirements.pdf 
+
 .env
 node_modules
 package-lock.json
