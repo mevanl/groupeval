@@ -1,16 +1,18 @@
-document.querySelector("#txtSubmit").addEventListener("click", function (e) {
-    let strUsername = $('#txtEmail').val();
-    const strPassword = $('#txtPassword').val();
-    const strConfirm_Password = $('#txtConfirm_Password').val();
-    const strFirst_Name = $('#txtFirst_Name').val();
-    const strLast_Name = $('#txtLast_Name').val();
-    const telPhone = $('#txtMobile_Phone_Number').val();
-    let blnError = false;
-    let strMessage = '';
-    strUsername = strUsername.trim();
+import { load_html } from "../app.js"
 
-    const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9-]*\.edu/;
-    const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_\-+=~`[\]{}|:;"'<>,.?\\/])(?!.*\s).{10,}$/gm;
+document.querySelector("#txtSubmit").addEventListener("click", function (e) {
+    let strUsername = document.querySelector("#txtEmail").value
+    const strPassword = document.querySelector("#txtPassword").value
+    const strConfirm_Password = document.querySelector("#txtConfirm_Password").value
+    const strFirst_Name = document.querySelector("#txtFirst_Name").value
+    const strLast_Name = document.querySelector("#txtLast_Name").value
+    const telPhone = document.querySelector("#txtMobile_Phone_Number").value
+    let blnError = false 
+    let strMessage = ''
+    strUsername = strUsername.trim()
+
+    const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
+    const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
     const phonePattern = /^(\d )?\(\d{3}\) \d{3}-\d{4}$/gm;
 
     if (!emailPattern.test(strUsername)) {
@@ -61,7 +63,6 @@ document.querySelector("#txtSubmit").addEventListener("click", function (e) {
 
 });
 
-$("#showLoginForm").on('click', function () {
-    $("#btnRegistration_Form").hide();
-    $("#btnLogin_Form").show();
-});
+document.querySelector("#showLoginForm").addEventListener("click", function(event) { 
+    load_html("login") 
+})

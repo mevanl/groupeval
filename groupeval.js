@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(express.static("public"))
 
 
-// routes go here
+// routes go here (we dont need for SPA ?)
 
 
 // Serve index.html
