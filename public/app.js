@@ -1,0 +1,41 @@
+const div_body_content = document.getElementById('body_content')
+
+const pages = {
+    '/': { html: '/pages/home.html', script: '/scripts/home.js' },
+    '/login': { html: '/pages/login.html', script: '/scripts/login.js' },
+    '/register': { html: '/pages/register.html', script: '/scripts/register.js' },
+}
+
+
+async function load_page(path, update_history = true) {
+    const page = pages[path] || pages['/']
+
+    try {
+        // Load the html
+        const html = await fetch(page.html).then(response => response.text())
+        div_body_content.innerHTML = html 
+
+        // Load the script if exists
+        if (page.script) {
+            const module = await import(page.script)
+            module.default?.()
+        }
+
+        if (update_history) {
+            window.history.pushState({}, '', path)
+        }
+
+    } catch (err) {
+        console.log(`Error loading page at ${path}`, err)
+        div_body_content.innerHTML = `<p>Error loading page</p>`
+    }
+}
+
+
+window.addEventListener('popstate', () => {
+    load_page(location.pathname, false)
+})
+
+
+load_page(location.pathname)
+export { load_page }

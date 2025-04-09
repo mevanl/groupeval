@@ -29,3 +29,15 @@ user could be teacher or student
 
 
 not just for tn tech 
+
+
+
+itertion 2 notes:
+Student and professor menu for groups
+- Professor can give code to student. 
+- (A user is not a student or teacher account, but each group has those roles)
+- student can view a team members basic info like name and email, discord, phone number
+- teacher can make feedback assignment
+- teacher can view it as well 
+- email notifications?
+- Teacher reviews the feedback 
