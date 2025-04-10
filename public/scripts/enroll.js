@@ -3,7 +3,7 @@ import { load_page } from "../app.js";
 export default function EnrollingClass() {
      
     document.querySelector("#submitButton_enroll").addEventListener("click", function (e) {
-        const num_10_Code = document.querySelector("#num_enrollmentCode").value
+        const num_10_Code = document.querySelector("#txt_enrollmentCode").value
         let blnError = false 
         let strMessage = ''
 
