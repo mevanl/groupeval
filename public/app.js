@@ -4,6 +4,9 @@ const pages = {
     '/': { html: '/pages/home.html', script: '/scripts/home.js' },
     '/login': { html: '/pages/login.html', script: '/scripts/login.js' },
     '/register': { html: '/pages/register.html', script: '/scripts/register.js' },
+    '/dashboard': { html: '/pages/dashboard.html', script: '/scripts/dashboard.js' },
+    '/create-a-class': { html: '/pages/create-a-class.html', script: '/scripts/create-a-class.js' },
+    '/enroll': { html: '/pages/enroll.html', script: '/scripts/enroll.js' }
 }
 
 

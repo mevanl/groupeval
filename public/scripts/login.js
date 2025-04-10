@@ -35,7 +35,9 @@
                 Swal.fire({
                     icon: 'success',
                     text: "Login Confirmed"
-                })
+                }).then(() => {
+                    load_page("/dashboard"); // Navigate to the dashboard after successful login
+                });
             }
         })
         

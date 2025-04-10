@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light text-dark">
+    <div id="dashboard_content" class="container mt-4">
+        <!-- Welcome Section -->
+        <h1 class="text-center">Welcome to Your Dashboard</h1>
+
+        <!-- Actions Section -->
+        <div id="actions" class="mt-5">
+            <h2>Actions</h2>
+            <button id="btnCreateClass" class="btn btn-primary m-2">Create a Class</button>
+            <button id="btnEnrollClass" class="btn btn-primary m-2">Enroll in a Class</button>
+        </div>
+
+        <!-- Classes Teaching Section -->
+        <div id="teachingClasses" class="mt-5">
+            <h2>Classes You're Teaching</h2>
+            <div id="teachingList" class="d-flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Classes Enrolled Section -->
+        <div id="enrolledClasses" class="mt-5">
+            <h2>Classes You're Enrolled In</h2>
+            <div id="enrolledList" class="d-flex flex-wrap gap-2"></div>
+        </div>
+    </div>
+
+    <!-- Link to Dashboard Script -->
+    <script type="module" src="../js/dashboard/dashboard.js"></script>
+</body>
+</html>
