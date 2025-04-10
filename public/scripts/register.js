@@ -59,6 +59,8 @@ export default function init() {
             Swal.fire({
                 icon: 'success',
                 text: "Registration Confirmed"
+            }).then(() => {
+                load_page("/login"); 
             })
         }
     
