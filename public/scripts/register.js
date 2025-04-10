@@ -1,13 +1,13 @@
 import { load_page } from "../app.js"
 
 export default function init() {
-    document.querySelector("#txtSubmit").addEventListener("click", function (e) {
+    document.querySelector("#btnSubmit").addEventListener("click", function (e) {
         let strUsername = document.querySelector("#txtEmail").value
         const strPassword = document.querySelector("#txtPassword").value
         const strConfirm_Password = document.querySelector("#txtConfirm_Password").value
         const strFirst_Name = document.querySelector("#txtFirst_Name").value
         const strLast_Name = document.querySelector("#txtLast_Name").value
-        const telPhone = document.querySelector("#txtMobile_Phone_Number").value
+        const telPhone = document.querySelector("#telMobile_Phone_Number").value
         let blnError = false 
         let strMessage = ''
         strUsername = strUsername.trim()

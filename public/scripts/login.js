@@ -2,7 +2,7 @@
 
     export default function init() {
 
-        document.querySelector("#txt_Login_Submit").addEventListener("click", function (e) {
+        document.querySelector("#btn_Login_Submit").addEventListener("click", function (e) {
             const emailPattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
             const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
             
