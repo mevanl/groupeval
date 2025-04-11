@@ -6,7 +6,9 @@ const pages = {
     '/register': { html: '/pages/register.html', script: '/scripts/register.js' },
     '/dashboard': { html: '/pages/dashboard.html', script: '/scripts/dashboard.js' },
     '/create-a-class': { html: '/pages/create-a-class.html', script: '/scripts/create-a-class.js' },
-    '/enroll': { html: '/pages/enroll.html', script: '/scripts/enroll.js' }
+    '/enroll': { html: '/pages/enroll.html', script: '/scripts/enroll.js' },
+    '/class_teacher_view': { html: '/pages/class_teacher_view.html', script: '/scripts/class_teacher_view.js' }
+
 }
 
 

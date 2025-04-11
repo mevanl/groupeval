@@ -14,12 +14,13 @@ export default function initDashboard() {
     });
 
 
-    
+    //This is only a place holder until we we get the create a class function working
     const teachingClasses = [
         { name: "Math 1", code: "MTH101", section: "A" },
         { name: "Science 2", code: "SCI202", section: "B" }
     ];
 
+    //This is only a place holder until we we get the create a class function working
     const enrolledClasses = [
         { name: "English 3", code: "ENG303", teacher: "Mr. John Doe" },
         { name: "History 4", code: "HIS404", teacher: "Dr. Jane Smith" }
@@ -40,7 +41,7 @@ export default function initDashboard() {
         `;
 
         classCard.addEventListener("click", () => {
-            alert(`You selected your class: ${classItem.code} ${classItem.section} that you are teaching.`);
+            load_page("/class_teacher_view"); // Redirect to the teacher class page
         });
 
         teachingList.appendChild(classCard);

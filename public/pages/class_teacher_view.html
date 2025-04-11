@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Teacher View</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light text-dark">
+    <div class="container mt-4">
+        <!-- Class Information -->
+        <h1 id="classTitle" class="text-center">Class Name:</h1>
+        <h4 id="classSection" class="text-center">Section: </h4>
+
+        <!-- Groups Section -->
+        <div id="groupsSection" class="mt-5">
+            <h3>Groups</h3>
+            <button id="createGroupsButton" class="btn btn-primary m-2" aria-label="Creates Groups">Create Groups</button>
+            <button id="viewGroupsButton" class="btn btn-primary m-2" aria-label="View Emails">View Groups</button>
+        </div>
+
+        <!-- Peer Review Section -->
+        <div id="peerReviewSection" class="mt-5">
+            <h3>Peer Review</h3>
+            <button id="createUpdatePublicPeerReview_btn" class="btn btn-primary m-2" aria-label="Create Peer Review">Create/Update Peer Review</button>
+            <button id="sendPeerReviews_btn" class="btn btn-primary m-2" aria-label="Send Peer Review">Send Peer Review</button>
+        </div>
+
+        <!-- Back to Dashboard Button -->
+        <div class="mt-5 text-center">
+            <button id="goBackToDashboard_btn" class="btn btn-primary">Go Back to Dashboard</button>
+        </div>
+    </div>
+
+    <script type="module" src="../scripts/class_teacher_view.js"></script>
+</body>
+</html>

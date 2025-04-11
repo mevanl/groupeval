@@ -3,13 +3,13 @@ import { load_page } from "../app.js";
 export default function EnrollingClass() {
      
     document.querySelector("#submitButton_enroll").addEventListener("click", function (e) {
-        const num_10_Code = document.querySelector("#txt_enrollmentCode").value
+        const txt_10_Code = document.querySelector("#txt_enrollmentCode").value
         let blnError = false 
         let strMessage = ''
 
-        if(num_10_Code.length != 10){
+        if( txt_10_Code.length != 10){
             blnError = true;
-            strMessage += '<p class="mb-0 mt-0">The Code Must Be A 10 Digit Number.</p>'
+            strMessage += '<p class="mb-0 mt-0">The Code Must Have 10 Characters (Teacher is supposed to send it to you).</p>'
         }
 
         if (blnError) {
@@ -23,7 +23,7 @@ export default function EnrollingClass() {
         else {
             Swal.fire({
                 icon: 'success',
-                text: "Number Confirmed"
+                text: "Code Confirmed"
             })}
 
 
