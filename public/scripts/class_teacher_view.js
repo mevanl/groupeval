@@ -8,5 +8,9 @@ export default function TeacherView() {
     document.querySelector("#goBackToDashboard_btn").addEventListener("click", () => {
         load_page("/dashboard");
     });
+
+    document.querySelector("#createUpdatePublicPeerReview_btn").addEventListener("click", function(event) {
+        load_page("/create_review")
+    })
     
 };

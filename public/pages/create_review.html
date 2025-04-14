@@ -1,0 +1,42 @@
+<div id="dashboard_content" class="container mt-4">
+    <!-- Welcome Section -->
+    <h1 class="text-center">Create Peer Review</h1>
+
+    <div class="container mt-4">
+        <!-- Heading -->
+        <h1 class="text-center">Metadata</h1>
+
+        <!-- Form for Create Peer Review -->
+        <form class="mt-4">
+            <div class="mb-3">
+                <label for="txt_review_name" class="form-label">Peer Review Name</label>
+                <input type="text" class="form-control" id="txt_review_name" placeholder="Enter the review name"
+                    aria-label="Peer Review Name">
+            </div>
+            <div class="mb-3">
+                <label for="txt_start_date" class="form-label">Start Date</label>
+                <input type="text" class="form-control" id="txt_start_date" placeholder="2025-04-12"
+                    aria-label="Start Date">
+            </div>
+            <div class="mb-3">
+                <label for="txt_end_date" class="form-label">End Date</label>
+                <input type="text" class="form-control" id="txt_end_date" placeholder="2025-04-12"
+                    aria-label="End data">
+            </div>
+
+            <div id="div_questions">
+
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <!-- Create Question Button -->
+                <button type="button" class="btn btn-primary m-2" id="button_create_question">Create Question</button>
+                <!-- Submit Button -->
+            </div>
+
+            <button type="button" class="btn btn-primary m-2" id="submitButton">Finish Form</button>
+
+        </form>
+    </div>
+</div>
+<script type="module" src="../scripts/create_review.js"></script>
