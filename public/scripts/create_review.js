@@ -11,7 +11,6 @@ export default function CreatePeerReview() {
     });
 };
 
-
 function create_question() {
     // Build our html for the question
     const html_container = document.createElement("div")

@@ -1,37 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light text-dark">
-    <div id="dashboard_content" class="container mt-4">
-        <!-- Welcome Section -->
-        <h1 class="text-center">Welcome to Your Dashboard</h1>
+<div id="dashboard_content" class="container mt-4">
+    <!-- Welcome Section -->
+    <h1 class="text-center">Welcome to Your Dashboard</h1>
 
-        <!-- Actions Section -->
-        <div id="actions" class="mt-5">
-            <h2>Actions</h2>
-            <button id="btnCreateClass" class="btn btn-primary m-2" aria-label="Create Class">Create a Class</button>
-            <button id="btnEnrollClass" class="btn btn-primary m-2" aria-label="Enroll Class">Enroll in a Class</button>
-        </div>
-
-        <!-- Classes Teaching Section -->
-        <div id="teachingClasses" class="mt-5">
-            <h2>Classes You're Teaching</h2>
-            <div id="teachingList" class="d-flex flex-wrap gap-2" aria-label="Class Your Teaching"></div>
-        </div>
-
-        <!-- Classes Enrolled Section -->
-        <div id="enrolledClasses" class="mt-5">
-            <h2>Classes You're Enrolled In</h2>
-            <div id="enrolledList" class="d-flex flex-wrap gap-2" aria-label="Class Your Enrolled In"></div>
-        </div>
+    <!-- Actions Section -->
+    <div id="actions" class="mt-5">
+        <h2>Actions</h2>
+        <button id="button_create_class" class="btn btn-primary m-2" aria-label="Create Class">Create a Class</button>
+        <button id="button_enroll_class" class="btn btn-primary m-2" aria-label="Enroll Class">Enroll in a Class</button>
     </div>
 
-    <!-- Link to Dashboard Script -->
-    <script type="module" src="../js/dashboard/dashboard.js"></script>
-</body>
-</html>
+    <!-- Classes Teaching Section -->
+    <div id="teachingClasses" class="mt-5">
+        <h2>Classes You're Teaching</h2>
+        <div id="teachingList" class="d-flex flex-wrap gap-2" aria-label="Class Your Teaching"></div>
+    </div>
+
+    <!-- Classes Enrolled Section -->
+    <div id="enrolledClasses" class="mt-5">
+        <h2>Classes You're Enrolled In</h2>
+        <div id="enrolledList" class="d-flex flex-wrap gap-2" aria-label="Class Your Enrolled In"></div>
+    </div>
+</div>

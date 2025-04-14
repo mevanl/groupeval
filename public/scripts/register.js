@@ -1,7 +1,7 @@
 import { load_page } from "../app.js"
 
 export default function init() {
-    document.querySelector("#btnSubmit").addEventListener("click", function (e) {
+    document.querySelector("#button_submit").addEventListener("click", function (e) {
         let strUsername = document.querySelector("#txtEmail").value
         const strPassword = document.querySelector("#txtPassword").value
         const strConfirm_Password = document.querySelector("#txtConfirm_Password").value
@@ -66,7 +66,7 @@ export default function init() {
     
     });
     
-    document.querySelector("#showLoginForm").addEventListener("click", function(event) { 
+    document.querySelector("#button_login").addEventListener("click", function(event) { 
         load_page("/login") 
     })
 }

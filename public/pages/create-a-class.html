@@ -1,43 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Class</title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light text-dark">
-    <div class="container mt-4">
-        <!-- Heading -->
-        <h1 class="text-center">Create a New Class</h1>
+<div class="container mt-4">
 
-        <!-- Form for Class Details -->
-        <form class="mt-4">
-            <div class="mb-3">
-                <label for="txt_className" class="form-label">Full Name of the Class</label>
-                <input type="text" class="form-control" id="txt_className" placeholder="Enter the full name of the class" aria-label="Class Full Name">
-            </div>
-            <div class="mb-3">
-                <label for="txt_classLabel" class="form-label">Class Lable</label>
-                <input type="text" class="form-control" id="txt_classLabel" placeholder="EXample: CSC 4200" aria-label="Class lable">
-            </div>
-            <div class="mb-3">
-                <label for="txt_classSection" class="form-label">Class Section</label>
-                <input type="text" class="form-control" id="txt_classSection" placeholder="Enter the class section" aria-label="Class Section">
-            </div>
-            <div class="mb-3">
-                <label for="studentEmails" class="form-label">Students Emails</label>
-                <textarea class="form-control" id="studentEmails" rows="3" placeholder="Enter student email addresses, separated by commas" aria-label="Students Emails"></textarea>
-            </div>
-            <div class="d-flex justify-content-between">
-                <!-- Cancel Button -->
-                <button type="button" class="btn btn-primary m-2" id="cancelButton">Cancel</button>
-                <!-- Submit Button -->
-                <button type="button" class="btn btn-primary m-2" id="submitButton" >Submit</button> 
-            </div>
-        </form>
-    </div>
+    <!-- Heading -->
+    <h1 class="text-center">Create a New Class</h1>
 
-    <script type="module" src="../scripts/create-class.js"></script>
-</body>
-</html>
+    <!-- Form for Class Details -->
+    <form class="mt-4">
+        <div class="mb-3">
+            <label for="txt_className" class="form-label">Full Name of the Class</label>
+            <input type="text" class="form-control" id="txt_className" placeholder="Enter the full name of the class"
+                aria-label="Class Full Name">
+        </div>
+        <div class="mb-3">
+            <label for="txt_classLabel" class="form-label">Class Lable</label>
+            <input type="text" class="form-control" id="txt_classLabel" placeholder="Example: CSC 4200"
+                aria-label="Class lable">
+        </div>
+        <div class="mb-3">
+            <label for="txt_classSection" class="form-label">Class Section</label>
+            <input type="text" class="form-control" id="txt_classSection" placeholder="Enter the class section"
+                aria-label="Class Section">
+        </div>
+        <div class="mb-3">
+            <label for="studentEmails" class="form-label">Students Emails</label>
+            <textarea class="form-control" id="studentEmails" rows="3"
+                placeholder="Enter student email addresses, separated by commas"
+                aria-label="Students Emails"></textarea>
+        </div>
+        <div class="d-flex justify-content-between">
+            <!-- Cancel Button -->
+            <button type="button" class="btn btn-primary m-2" id="button_cancel">Cancel</button>
+            <!-- Submit Button -->
+            <button type="button" class="btn btn-primary m-2" id="button_submit">Submit</button>
+        </div>
+    </form>
+</div>

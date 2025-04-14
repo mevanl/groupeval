@@ -2,7 +2,7 @@ import { load_page } from "../app.js";
 
 export default function CreatingClass() {
     
-    document.querySelector("#submitButton").addEventListener("click", function (e) {
+    document.querySelector("#button_submit").addEventListener("click", function (e) {
         const Class_Name = document.querySelector("#txt_className").value.trim()
         const Class_Lable = document.querySelector("#txt_classLabel").value.trim()
         const Class_Section = document.querySelector("#txt_classSection").value.trim()
@@ -43,7 +43,7 @@ export default function CreatingClass() {
 
     })
     
-    document.querySelector("#cancelButton").addEventListener("click", () => {
+    document.querySelector("#button_cancel").addEventListener("click", () => {
          // Navigate back to the dashboard
         load_page("/dashboard");
      });

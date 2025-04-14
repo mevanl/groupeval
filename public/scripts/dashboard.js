@@ -3,12 +3,12 @@ import { load_page } from "../app.js"
 
 export default function initDashboard() {
 
-    document.querySelector("#btnCreateClass").addEventListener("click", () => {
+    document.querySelector("#button_create_class").addEventListener("click", () => {
         // Navigate to the create-class page
         load_page("/create-a-class");
     });
 
-    document.querySelector("#btnEnrollClass").addEventListener("click", () => {
+    document.querySelector("#button_enroll_class").addEventListener("click", () => {
         // Navigate to the create-class page
         load_page("/enroll");
     });
