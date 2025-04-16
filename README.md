@@ -6,5 +6,5 @@ A platform for peer evaluation and feedback.
 
 1. Clone the repo
 2. run npm install
-3. node groupeval.js 
+3. node server.js 
 4. click link to open in browser  
