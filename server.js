@@ -44,7 +44,7 @@ app.get("/api/get_courses", (request, response, next) => {
     
     // check if user exists in db (redudant)
     
-    // if exists, db.run there courses 
+    // if exists, db.all there courses 
 })
 
 
@@ -57,7 +57,7 @@ app.get("/api/get_peer_reviews", (request, response, next) => {
     
     // check to make sure course exists in db (redundant but better safe)
     
-    // if validation good, db.run 
+    // if validation good, db.all 
 })
 
 // teacher create peer review for a class 
@@ -81,7 +81,7 @@ app.get("/api/get_groups", (request, response, next) => {
     
     // check to make sure course exists in db (redundant but better safe)
     
-    // if course exists, db.run for groups in that course 
+    // if course exists, db.all for groups in that course 
 })
 
 // teacher create group for class
@@ -98,6 +98,41 @@ app.post("/api/create_group", (request, response, next) => {
     // If unqiue and validated successfully, db.run 
 })
 
+// teacher can update a group in a class 
+app.post("/api/update_group", (request, response, next) => {
+    // get request body information 
+    
+    // validation request body information
+    
+    // check in database course exists in db (redundant but better safe)
+    
+    // check in database if this group conflicts in this course 
+    // (group name should be unique basically)
+
+    // do unique updates (no duplicate users, name is still unique, etc.)
+    
+    // If unqiue and validated successfully, db.run 
+})
+
+
+// USER PROFILE
+
+// return your profile 
+app.get("/api/user_profile", (request, response, next) => {
+    // get request body information 
+    
+    // validate user, make sure they are that user 
+
+    // db.all if validation successful 
+})
+
+app.post("/api/update_user_profile", (request, response, next) => {
+    // get request body information 
+    
+    // validate user, make sure they are that user
+
+    // db.run if validation successful 
+})
 
 // Base url index.html
 app.get("*", (request, response, next) => {
