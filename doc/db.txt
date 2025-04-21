@@ -1,0 +1,62 @@
+// bcrypt for password
+Table users {
+  firstname varchar [not null]
+  lastname varchar [not null]
+  email varchar [primary key, not null]
+  password varchar [not null]
+  created_at timestamp [not null]
+  last_logged_in timestamp [not null]
+}
+
+Table socials {
+  email varchar [primary key, ref: > users.email]
+  discord varchar
+  teams varchar
+  phone varchar [not null]
+}
+
+Table courses {
+  name varchar [not null]
+  course_uuid varchar [primary key, not null]
+  owner_email varchar [not null, ref: > users.email]
+}
+
+Table course_enrollments {
+  course_uuid varchar [not null, ref: > courses.course_uuid]
+  user_email varchar [not null, ref: > users.email]
+  enrolled_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+
+  primary key (course_uuid, user_email)
+}
+
+Table groups {
+  group_name varchar [not null]
+  course_uuid varchar [not null, ref: > courses.course_uuid]
+  group_uuid varchar [primary key, not null]
+}
+
+Table group_membership {
+  group_uuid varchar [not null, ref: > groups.group_uuid]
+  user_email varchar [not null, ref: > users.email]
+  joined_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+
+  primary key (group_uuid, user_email)
+}
+
+Table assessments {
+  assessment_uuid varchar [primary key, not null]
+  course_uuid varchar [not null, ref: > courses.course_uuid]
+  title varchar [not null]
+  date_created timestamp [not null]
+  due_date timestamp [not null]
+  questions_object object
+  start_date timestamp
+  end_date timestamp
+}
+
+Table sessions {
+  user_email varchar [not null, ref: > users.email]
+  start_datetime timestamp
+  last_datetime timestamp
+  status varchar [not null]
+}

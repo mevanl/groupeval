@@ -5,3 +5,6 @@ This file will state the usages of generative AI for the purposes of this projec
 Questioned chatGPT regarding dynamically loading new html with single page applications. 
 I did not give it the code i had so it did not write it for me,
 but i based my solution on its example code to create my load_html function found in public/app.js. 
+
+4/21/25 - Mason
+I used chatGPT to create the .sql file for me after i create a create the DBML
