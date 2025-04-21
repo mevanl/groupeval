@@ -7,6 +7,7 @@ export default function CreatingClass() {
         const Class_Lable = document.querySelector("#txt_classLabel").value.trim()
         const Class_Section = document.querySelector("#txt_classSection").value.trim()
         const Students_Emials = document.querySelector("#studentEmails").value.trim()
+        const Class_Term = document.querySelector("#txt_classterm").value.trim()
 
         let blnError = false 
         let strMessage = ''
@@ -23,7 +24,12 @@ export default function CreatingClass() {
 
         if (Class_Section.length < 1) {
             blnError = true;
-            strMessage += '<p class="mb-0 mt-0">Class Must Have A section.</p>';
+            strMessage += '<p class="mb-0 mt-0">Class Must Have A Class Section.</p>';
+        }
+
+        if (Class_Section.length < 1) {
+            blnError = true;
+            strMessage += '<p class="mb-0 mt-0">Class Must Have A Class Term.</p>';
         }
 
         if (blnError) {
