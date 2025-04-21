@@ -1,15 +1,22 @@
+// Imports
 const express = require("express")
 const cors = require("cors")
 const path = require("path")
 require("dotenv").config()
+const {v4:uuidv4} = require("uuid")
+const sqlite = require("sqlite3").verbose()
+const bcrypt = require("bcrypt")
+const int_salt = 10
 
+// Setup our express app 
 const app = express()
-
 app.use(express.json())
+app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 
-const PORT = process.env.PORT || 3000
-
+// Setup our database 
+const db_source = "database.db"
+const db = new sqlite.Database(db_source)
 
 
 // LOGIN AND REGISTER API 
@@ -140,4 +147,5 @@ app.get("*", (request, response, next) => {
 })
 
 
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}/`))
