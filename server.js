@@ -3,7 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const path = require("path")
 require("dotenv").config()
-const {v4:uuidv4} = require("uuid")
+const { v4: uuidv4 } = require("uuid")
 const sqlite = require("sqlite3").verbose()
 const bcrypt = require("bcrypt")
 const int_salt = 10
@@ -26,11 +26,11 @@ app.get("/api/validate_login", (request, response, next) => {
     const qstring_get_account = `SELECT email, password from table_users WHERE email = ?`
     const qstring_update_last_logged_in = `UPDATE table_users SET last_logged_in = ? WHERE email = ?`
 
-    
+
     // get request body information (email and password)
     let string_email = request.body.email.trim().toLowerCase()
     let string_password = request.body.password
-    
+
 
     // Email validation using regex
     const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,17 +71,17 @@ app.get("/api/validate_login", (request, response, next) => {
         db.run(qstring_update_last_logged_in, [timestamp, string_email], function (error) {
             // if couldnt update
             if (error) {
-                console.error(error) 
-                return response.status(500).json({ error: "Failed to update last login" }) 
+                console.error(error)
+                return response.status(500).json({ error: "Failed to update last login" })
             }
 
-            return response.status(500).json({ error: "Failed to update last login" })      
+            return response.status(500).json({ error: "Failed to update last login" })
         })
     })
 })
 
 
-  
+
 // register account 
 app.post("/api/register_account", (request, response, next) => {
     // SQL Prepared statements
@@ -92,9 +92,9 @@ app.post("/api/register_account", (request, response, next) => {
     // get request body information 
     let string_email = request.body.email.trim().toLowerCase()
     let string_password = request.body.password
-    let string_first_name = request.body.first_name 
-    let string_last_name = request.body.last_name 
-    let string_phone_number = request.body.phone_number 
+    let string_first_name = request.body.first_name
+    let string_last_name = request.body.last_name
+    let string_phone_number = request.body.phone_number
     let string_discord_username = request.body.discord_username
 
     // Email validation using regex
@@ -115,24 +115,24 @@ app.post("/api/register_account", (request, response, next) => {
 
     // First and last name not blank 
     if (!string_first_name || string_first_name.length < 1) {
-        return response.status(400).json({ error: "First name must not be blank"})
+        return response.status(400).json({ error: "First name must not be blank" })
     }
     if (!string_last_name || string_last_name.length < 1) {
-        return response.status(400).json({ error: "Last name must not be blank"})
+        return response.status(400).json({ error: "Last name must not be blank" })
     }
 
     // Phone validation 
-    
-        // TODO: IMPLEMENT THIS WHEN FIGURE OUT LIBRARY 
-    
+
+    // TODO: IMPLEMENT THIS WHEN FIGURE OUT LIBRARY 
+
 
     // Discord Validation, can be empty 
-        // if empty, igore 
-        if (string_discord_username.length < 1) {
-            string_discord_username = null
-        }
-        
-    
+    // if empty, igore 
+    if (string_discord_username.length < 1) {
+        string_discord_username = null
+    }
+
+
     const string_hashed_password = bcrypt.hashSync(string_password, int_salt)
     const timestamp = new Date().toISOString()
 
@@ -175,12 +175,12 @@ app.post("/api/register_account", (request, response, next) => {
 // get the courses you are in 
 app.get("/api/get_courses", (request, response, next) => {
     // can return an object of courses with two main sections, teaching and enrolled based on the role 
-    
-    
+
+
     // get request body information (the user)
-    
+
     // check if user exists in db (redudant)
-    
+
     // if exists, db.all there courses 
 })
 
@@ -194,24 +194,24 @@ app.post("/api/create_course", (response, request, next) => {
 // get peer review assignments for a class 
 app.get("/api/get_peer_reviews", (request, response, next) => {
     // get request body information (course name)
-    
+
     // validate request body information 
-    
+
     // check to make sure course exists in db (redundant but better safe)
-    
+
     // if validation good, db.all 
 })
 
 // teacher create peer review for a class 
 app.post("/api/create_peer_review", (request, response, next) => {
     // get request body information (course name, peer review data)
-    
+
     // validate request body information 
-    
+
     // check to make sure course exists in db (redundant but better safe)
-    
+
     // check that peer review name is unqiue in db 
-    
+
     // if validation good, db.run  
 })
 
@@ -304,9 +304,9 @@ app.post("/api/create_group", (request, response, next) => {
                     return response.status(500).json({ error: "Failed to create group" })
                 }
 
-                return response.status(200).json({ 
-                    message: "Group created successfully", 
-                    group_uuid: string_group_uuid 
+                return response.status(200).json({
+                    message: "Group created successfully",
+                    group_uuid: string_group_uuid
                 })
             })
         })
@@ -316,17 +316,21 @@ app.post("/api/create_group", (request, response, next) => {
 // teacher can update a group in a class 
 app.post("/api/update_group", (request, response, next) => {
     // get request body information 
-    
+
     // validation request body information
-    
+
     // check in database course exists in db (redundant but better safe)
-    
+
     // check in database if this group conflicts in this course 
     // (group name should be unique basically)
 
-    // do unique updates (no duplicate users, name is still unique, etc.)
-    
+    // do unique updates (name is still unique, etc.)
+
     // If unqiue and validated successfully, db.run 
+})
+
+app.post("/api/join_group", (request, response, next) => {
+    
 })
 
 
@@ -335,7 +339,7 @@ app.post("/api/update_group", (request, response, next) => {
 // return your profile 
 app.get("/api/user_profile", (request, response, next) => {
     // get request body information 
-    
+
     // validate user, make sure they are that user 
 
     // db.all if validation successful 
@@ -343,7 +347,7 @@ app.get("/api/user_profile", (request, response, next) => {
 
 app.post("/api/update_user_profile", (request, response, next) => {
     // get request body information 
-    
+
     // validate user, make sure they are that user
 
     // db.run if validation successful 
