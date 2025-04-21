@@ -16,14 +16,14 @@ export default function initDashboard() {
 
     //This is only a place holder until we we get the create a class function working
     const teachingClasses = [
-        { name: "Math 1", code: "MTH101", section: "A" },
-        { name: "Science 2", code: "SCI202", section: "B" }
+        { name: "Math 1", code: "MTH101", section: "A", term: "Fall 2023" },
+        { name: "Science 2", code: "SCI202", section: "B", term: "Spring 2025" }
     ];
 
     //This is only a place holder until we we get the create a class function working
     const enrolledClasses = [
-        { name: "English 3", code: "ENG303", teacher: "Mr. John Doe" },
-        { name: "History 4", code: "HIS404", teacher: "Dr. Jane Smith" }
+        { name: "English 3", code: "ENG303", term: "Fall 2023", teacher: "Mr. John Doe" },
+        { name: "History 4", code: "HIS404", term: "Spring 2026", teacher: "Dr. Jane Smith" }
     ];
 
     // Get reference to class lists
@@ -37,7 +37,8 @@ export default function initDashboard() {
         classCard.innerHTML = `
             <h5>${classItem.name}</h5>
             <h6>${classItem.code}</h6>
-            <p>Section: ${classItem.section}</p>
+            <h7>Section: ${classItem.section}</h7>
+            <p>Term: ${classItem.term}</p>
         `;
 
         classCard.addEventListener("click", () => {
@@ -54,6 +55,7 @@ export default function initDashboard() {
         classCard.innerHTML = `
             <h5>${classItem.name}</h5>
             <h6>${classItem.code}</h6>
+            <h7>Term: ${classItem.term}</h7>
             <p>Teacher: ${classItem.teacher}</p>
         `;
 
