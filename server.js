@@ -313,7 +313,7 @@ app.post("/api/create_group", (request, response, next) => {
     })
 })
 
-// teacher can update a group in a class 
+// teacher can update a group in a class [NOT MVP] 
 app.post("/api/update_group", (request, response, next) => {
     // get request body information 
 
@@ -330,7 +330,7 @@ app.post("/api/update_group", (request, response, next) => {
 })
 
 app.post("/api/join_group", (request, response, next) => {
-    
+    // todo 
 })
 
 
