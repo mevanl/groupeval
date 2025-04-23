@@ -5,6 +5,7 @@ const router = express.Router()
 const db = require("../db/db")
 const { v4: uuidv4 } = require("uuid")
 const bcrypt = require("bcrypt")
+const IMask = require("imask") // Import IMask
 const int_salt = 10
 
 router.get("/login", (request, response, next) => {
@@ -112,6 +113,14 @@ router.post("/register", (request, response, next) => {
     }
 
     // Phone validation 
+
+    const phoneMask = IMask.createMask({
+        mask: '+{1}(000) 000-0000'
+    });
+    const formattedPhone = phoneMask.resolve(string_phone_number);
+    if (!formattedPhone || formattedPhone.length !== 16) {
+        return response.status(400).json({ error: "Invalid phone number format. Expected format: +1(XXX) XXX-XXXX" });
+    }
 
     // TODO: IMPLEMENT THIS WHEN FIGURE OUT LIBRARY 
 
