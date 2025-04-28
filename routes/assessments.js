@@ -5,13 +5,13 @@ const { v4: uuidv4 } = require("uuid")
 const { verify_user_token } = require("./jwt")
 
 
-// for a given course uuid, get all peer review assessment from db (stores as text, its json)
-router.get("/course/:course_uuid/assessments", verify_user_token, (request, response, next) => {
+// get all peer assessments for a course
+router.get("/courses/:course_uuid/assessments", verify_user_token, (request, response, next) => {
 
-    // SQL Prepared statement
+    // SQL Prepared statments
     const qstring_get_assessments_by_course = `SELECT * FROM table_assessments WHERE course_uuid = ?`
-
-    // request info
+    
+    // request info 
     const string_course_uuid = request.params.course_uuid?.trim()
 
     // validate request info
@@ -29,188 +29,312 @@ router.get("/course/:course_uuid/assessments", verify_user_token, (request, resp
 
         return response.status(200).json({ assessments: rows })
     })
+})
+
+
+// create peer review for a course (OWNER)
+router.post("/courses/:course_uuid/assessments", verify_user_token, (request, response, next) => {
     
-})
-
-
-// for a given course, create a peer review assessment and store in db as text (json object)
-router.post("/course/:course_uuid/assessments", verify_user_token, (request, response, next) => {
-
-    // SQL Prepared statements
-    const qstring_check_course_exists = `SELECT course_uuid FROM table_courses WHERE course_uuid = ?`
-    const qstring_insert_assessment = `INSERT INTO table_assessments (assessment_uuid, course_uuid, assessment_name, assessment_json) VALUES (?, ?, ?, ?)`
-
-    // request info
-    const string_course_uuid = request.params.course_uuid?.trim()
-    const string_assessment_name = request.body.assessment_name?.trim()
-    const string_assessment_json = JSON.stringify(request.body.assessment_json)
-
-    // validate request info
-    if (!string_course_uuid || string_course_uuid.length < 1) {
-        return response.status(400).json({ error: "Course UUID must not be blank" })
-    }
-    if (!string_assessment_name || string_assessment_name.length < 1) {
-        return response.status(400).json({ error: "Assessment name must not be blank" })
-    }
-    if (!string_assessment_json || string_assessment_json.length < 1) {
-        return response.status(400).json({ error: "Assessment JSON must not be blank" })
-    }
-
-    // check if course exists
-    db.get(qstring_check_course_exists, [string_course_uuid], (error, course_row) => {
-        // db error
-        if (error) {
-            console.error(error)
-            return response.status(500).json({ error: "Database error while checking course" })
-        }
-
-        // course doesn't exist
-        if (!course_row) {
-            return response.status(404).json({ error: "Course not found" })
-        }
-
-        // create assessment UUID and insert into DB
-        const string_assessment_uuid = uuidv4()
-        db.run(qstring_insert_assessment, [string_assessment_uuid, string_course_uuid, string_assessment_name, string_assessment_json], function (error) {
-            // db error
-            if (error) {
-                console.error(error)
-                return response.status(500).json({ error: "Failed to create assessment" })
-            }
-
-            return response.status(200).json({
-                message: "Assessment created successfully",
-                assessment_uuid: string_assessment_uuid
-            })
-        })
-    })
-
-})
-
-
-// get assigned assessments for a student in a course
-router.get("/courses/:course_uuid/assessments/assigned", verify_user_token, (request, response, next) => {
-
-    // SQL Prepared statement
-    const qstring_get_assigned_assessment = `
-        SELECT a.assessment_uuid, a.assessment_name, a.assessment_json
-        FROM table_assessments a
-        INNER JOIN table_student_assessments sa ON a.assessment_uuid = sa.assessment_uuid
-        WHERE a.course_uuid = ? AND sa.student_uuid = ?
+    // SQL prepared statment
+    const qstring_create_assessment = `
+        INSERT INTO table_assessments 
+        (assessment_uuid, course_uuid, assessment_name, start_date, due_date, array_json_questions) 
+        VALUES (?, ?, ?, ?, ?, ?)
     `
 
     // request info
     const string_course_uuid = request.params.course_uuid?.trim()
-    const string_student_uuid = request.query.student_uuid?.trim()
+    const { assessment_name, start_date, due_date, array_json_questions } = request.body
 
     // validate request info
-    if (!string_course_uuid || string_course_uuid.length < 1 || !string_student_uuid || string_student_uuid.length < 1) {
-        return response.status(400).json({ error: "Course UUID and Student UUID must not be blank" })
+    if (!string_course_uuid || string_course_uuid.length < 1 || 
+        !assessment_name || !start_date || !due_date || !array_json_questions) {
+        return response.status(400).json({ error: "Missing required fields for creating assessment" })
     }
 
-    // get assigned assessments
-    db.all(qstring_get_assigned_assessment, [string_course_uuid, string_student_uuid], (error, rows) => {
+    // create our uuid for assessment
+    const assessment_uuid = uuidv4()
+
+    db.run(qstring_create_assessment, [
+        assessment_uuid,
+        string_course_uuid,
+        assessment_name.trim(),
+        start_date.trim(),
+        due_date.trim(),
+        JSON.stringify(array_json_questions)
+    ], function (error) {
         // db error
+        if (error) {
+            console.error(error)
+            return response.status(500).json({ error: "Database error while creating assessment" })
+        }
+
+        return response.status(201).json({ message: "Assessment created successfully", assessment_uuid: assessment_uuid })
+    })
+})
+
+
+// get your assigned peer review (STUDENT) 
+router.get("/courses/:course_uuid/assessments/assigned", verify_user_token, (request, response, next) => {
+
+    // SQL prepared statements
+    const qstring_get_assigned_assessments = `
+        SELECT * FROM table_assessments
+        WHERE course_uuid = ?
+        AND start_date <= CURRENT_TIMESTAMP
+        AND due_date >= CURRENT_TIMESTAMP
+    `
+    // request info
+    const string_course_uuid = request.params.course_uuid?.trim()
+
+    // validate request
+    if (!string_course_uuid || string_course_uuid.length < 1) {
+        return response.status(400).json({ error: "Course UUID must not be blank" })
+    }
+
+    // get assessments
+    db.all(qstring_get_assigned_assessments, [string_course_uuid], (error, rows) => {
         if (error) {
             console.error(error)
             return response.status(500).json({ error: "Database error while fetching assigned assessments" })
         }
 
-        return response.status(200).json({ assessments: rows })
+        return response.status(200).json({ assigned_assessments: rows })
     })
 })
 
-// get public peer review feedback for a given assessment
-router.get("/courses/:course_uuid/assessments/:assessment_uuid/public", verify_user_token, (request, response, next) => {
 
-    // SQL Prepared statement
-    const qstring_get_public_feedback = `
-        SELECT feedback_json
-        FROM table_assessments
-        WHERE assessment_uuid = ? AND feedback_visibility = 'public'
+// TODO: MAKE SURE ONLY THE QUESTIONS WITH PUBLIC GET RETURNED
+//  get public part of peer review submissions for your group (STUDENT GETS THIS, THEY CAN SEE THE PUBLIC SUBMISSIONS OF THEIR GROUP MEMBERS)
+router.get("/courses/:course_uuid/assessments/:assessment_uuid/public_submissions", verify_user_token, (request, response, next) => {
+
+    // SQL Prepared statements
+    const qstring_get_submissions = `
+        SELECT * FROM table_assessment_submissions
+        WHERE assessment_uuid = ?
     `
-
+    
     // request info
     const string_assessment_uuid = request.params.assessment_uuid?.trim()
 
-    // validate request info
+    // validate request 
     if (!string_assessment_uuid || string_assessment_uuid.length < 1) {
         return response.status(400).json({ error: "Assessment UUID must not be blank" })
     }
 
-    // get public feedback
-    db.get(qstring_get_public_feedback, [string_assessment_uuid], (error, row) => {
-        // db error
-        if (error) {
-            console.error(error)
-            return response.status(500).json({ error: "Database error while fetching public feedback" })
-        }
-
-        // no public feedback found
-        if (!row) {
-            return response.status(404).json({ error: "No public feedback found for this assessment" })
-        }
-
-        return response.status(200).json({ feedback: row.feedback_json })
-    })
-})
-
-// list all submissions for a course
-router.get("/courses/:course_uuid/assessments/submissions", verify_user_token, (request, response, next) => {
-
-    // SQL Prepared statement
-    const qstring_get_submissions = `SELECT assessment_uuid, student_uuid, submission_json FROM table_assessments WHERE course_uuid = ?`
-
-    // request info
-    const string_course_uuid = request.params.course_uuid?.trim()
-
-    // validate request info
-    if (!string_course_uuid || string_course_uuid.length < 1) {
-        return response.status(400).json({ error: "Course UUID must not be blank" })
-    }
-
-    // get submissions
-    db.all(qstring_get_submissions, [string_course_uuid], (error, rows) => {
+    // get all the submissions
+    db.all(qstring_get_submissions, [string_assessment_uuid], (error, rows) => {
         // db error
         if (error) {
             console.error(error)
             return response.status(500).json({ error: "Database error while fetching submissions" })
         }
 
-        return response.status(200).json({ submissions: rows })
+        // no submissions 
+        if (!rows || rows.length === 0) {
+            return response.status(404).json({ error: "No submissions found for this assessment" })
+        }
+
+        // submissions exist, ONLY RETURN PUBLIC 
+        const public_submissions = rows.map(row => {
+            try {
+                const full_submission = JSON.parse(row.submission_json)
+
+                // Copy only public questions
+                const public_questions = full_submission.questions.filter(q => q.public === true)
+
+                const public_submission = {
+                    name: full_submission.name,
+                    start_date: full_submission.start_date,
+                    due_date: full_submission.due_date,
+                    status: full_submission.status,
+                    questions: public_questions,
+                    number_questions: public_questions.length,
+                }
+
+                return {
+                    submission_uuid: row.submission_uuid,
+                    user_email: row.user_email,
+                    date_submitted: row.date_submitted,
+                    public_submission: public_submission
+                }
+            } catch (parseError) {
+                console.error("Error parsing submission JSON:", parseError)
+                return null
+            }
+        }).filter(sub => sub !== null) // Remove any parsing failures
+
+        // return public submissions
+        return response.status(200).json({ submissions: public_submissions })
     })
+
 })
 
-// get a specific assessment submission for a course
-router.get("/courses/:course_uuid/assessments/:assessment_uuid/submission", verify_user_token, (request, response, next) => {
 
-    // SQL Prepared statement
-    const qstring_get_submission = `SELECT * FROM table_assessments WHERE assessment_uuid = ? AND course_uuid = ?`
+// get all submissions for a course (MUST BE OWNER OF THE COURSE)
+router.get("/courses/:course_uuid/assessments/submissions", verify_user_token, (request, response, next) => {
 
-    // request info
-    const string_assessment_uuid = request.params.assessment_uuid?.trim()
+    // SQL Prepared statements
+        const qstring_get_owner_email = `SELECT owner_email FROM table_courses WHERE course_uuid = ?`
+        const qstring_get_submissions = `
+            SELECT s.*
+            FROM table_assessment_submissions s
+            JOIN table_assessments a ON s.assessment_uuid = a.assessment_uuid
+            WHERE a.course_uuid = ?
+        `
+
+    // Request info
     const string_course_uuid = request.params.course_uuid?.trim()
+    const string_owner_email = request.user.user_email
 
-    // validate request info
-    if (!string_assessment_uuid || string_assessment_uuid.length < 1 || !string_course_uuid || string_course_uuid.length < 1) {
-        return response.status(400).json({ error: "Assessment UUID and Course UUID must not be blank" })
+    // validate request
+    if (!string_course_uuid || string_course_uuid.length < 1) {
+        return response.status(400).json({ error: "Course UUID must not be blank" })
     }
 
-    // get submission
-    db.get(qstring_get_submission, [string_assessment_uuid, string_course_uuid], (error, row) => {
+    
+    // verify ownership
+    db.get(qstring_get_owner_email, [string_course_uuid], (error, row) => {
+        // db error
+        if (error) {
+            console.error(error)
+            return response.status(500).json({ error: "Database error while checking course ownership" })
+        }
+
+        // no course found
+        if (!row) {
+            return response.status(404).json({ error: "Course not found" })
+        }
+
+        // they are not the owner 
+        if (row.owner_email !== string_owner_email) {
+            return response.status(403).json({ error: "Unauthorized access - not course owner" })
+        }
+
+        // this is the owner, get submissions
+        db.all(qstring_get_submissions, [string_course_uuid], (error, rows) => {
+            //db error
+            if (error) {
+                console.error(error)
+                return response.status(500).json({ error: "Database error while fetching submissions" })
+            }
+
+            return response.status(200).json({ submissions: rows })
+        })
+    })
+
+})
+
+
+// get specific submission (USER MUST BE OWNER OF THE COURSE, UNLESS ITS YOUR SUBMISSION)
+router.get("/courses/:course_uuid/assessments/:assessment_uuid/submissions/:submission_uuid", verify_user_token, (request, response, next) => {
+    
+    // SQL prepared statement
+    const qstring_get_submission = `
+        SELECT * FROM table_assessment_submissions
+        WHERE submission_uuid = ?
+    `
+    const qstring_get_owner_email = `
+        SELECT owner_email FROM table_courses
+        WHERE course_uuid = ?
+    `
+
+    // request info
+    const string_submission_uuid = request.params.submission_uuid?.trim()
+    const string_course_uuid = request.params.course_uuid?.trim()
+    const string_user_email = request.user.user_email 
+
+    // validate request 
+    if (!string_submission_uuid || string_submission_uuid.length < 1) {
+        return response.status(400).json({ error: "Submission UUID must not be blank" })
+    }
+    if (!string_course_uuid || string_course_uuid.length < 1) {
+        return response.status(400).json({ error: "Course UUID must not be blank" })
+    }
+
+    // get submission 
+    db.get(qstring_get_submission, [string_submission_uuid], (error, submission_row) => {
         // db error
         if (error) {
             console.error(error)
             return response.status(500).json({ error: "Database error while fetching submission" })
         }
 
-        // no submission found
-        if (!row) {
+        // no submission
+        if (!submission_row) {
             return response.status(404).json({ error: "Submission not found" })
         }
 
-        return response.status(200).json({ submission: row })
+        // user is the one who submitted it
+        if (submission_row.user_email === string_user_email) {
+            return response.status(200).json({ submission: submission_row })
+        }
+
+        // course owner
+        db.get(qstring_get_owner_email, [string_course_uuid], (error, owner_row) => {
+            // db error
+            if (error) {
+                console.error(error)
+                return response.status(500).json({ error: "Database error while checking course owner" })
+            }
+
+            // not owner, no access
+            if (!owner_row) {
+                return response.status(404).json({ error: "Course not found" })
+            }
+
+            // if this isnt the owner making request 
+            if (owner_row.owner_email !== string_user_email) {
+                return response.status(403).json({ error: "Unauthorized access - not submitter or course owner" })
+            }
+
+            // owner verified
+            return response.status(200).json({ submission: submission_row })
+        })
     })
 })
+
+
+
+// student submits their peer assessment
+router.post("/courses/:course_uuid/assessments/:assessment_uuid/submit", verify_user_token, (request, response, next) => {
+    
+    // SQL Prepared statements
+    const qstring_submit_assessment = `
+        INSERT INTO table_assessment_submissions
+        (submission_uuid, assessment_uuid, user_email, submission_json)
+        VALUES (?, ?, ?, ?)
+    `
+
+    // request info
+    const string_course_uuid = request.params.course_uuid?.trim()
+    const string_assessment_uuid = request.params.assessment_uuid?.trim()
+    const { submission_json } = request.body
+    const user_email = request.user?.email
+
+    // validate request
+    if (!string_course_uuid || !string_assessment_uuid || !submission_json || !user_email) {
+        return response.status(400).json({ error: "Missing required fields for submission" })
+    }
+
+    // create uuid
+    const submission_uuid = uuidv4()
+
+    // add to db 
+    db.run(qstring_submit_assessment, [
+        submission_uuid,
+        string_assessment_uuid,
+        user_email,
+        JSON.stringify(submission_json)
+    ], function (error) {
+        if (error) {
+            console.error(error)
+            return response.status(500).json({ error: "Database error while submitting assessment" })
+        }
+
+        return response.status(201).json({ message: "Assessment submitted successfully", submission_uuid: submission_uuid })
+    })
+})
+
 
 module.exports = router
