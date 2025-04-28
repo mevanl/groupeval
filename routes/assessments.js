@@ -167,7 +167,6 @@ router.get("/courses/:course_uuid/assessments/:assessment_uuid/public_submission
         // return public submissions
         return response.status(200).json({ submissions: public_submissions })
     })
-
 })
 
 
