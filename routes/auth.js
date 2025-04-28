@@ -9,7 +9,7 @@ const IMask = require("imask")
 const { generate_user_token } = require("./jwt")
 const int_salt = 10
 
-router.get("/login", (request, response, next) => {
+router.post("/login", (request, response, next) => {
 
     // SQL preparted statements
     const qstring_get_account = `SELECT email, password from table_users WHERE email = ?`
