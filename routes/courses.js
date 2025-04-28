@@ -2,11 +2,11 @@ const express = require("express")
 const router = express.Router()
 const db = require("../db/db")
 const { v4: uuidv4 } = require("uuid")
-
+const { verify_user_token } = require("./jwt")
 
 
 // get courses a user is teacher (owner) of
-router.get("/user/:email/courses/teaching", (request, response, next) => {
+router.get("/user/:email/courses/teaching", verify_user_token, (request, response, next) => {
     
     // SQL prepared statements
     const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`
@@ -51,7 +51,7 @@ router.get("/user/:email/courses/teaching", (request, response, next) => {
 
 
 // get courses a user is enrolled (student) in
-router.get("/user/:email/courses/enrolled", (request, response, next) => {
+router.get("/user/:email/courses/enrolled", verify_user_token, (request, response, next) => {
 
     // SQL Prepared statements
     const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`
@@ -101,7 +101,7 @@ router.get("/user/:email/courses/enrolled", (request, response, next) => {
 
 
 // Create a new course, the user who creates is the owner/teacher
-router.post("/courses", (request, response, next) => {
+router.post("/courses", verify_user_token, (request, response, next) => {
 
     // SQL Prepared statements
     const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`
@@ -175,7 +175,7 @@ router.post("/courses", (request, response, next) => {
 
 
 // Get info about specific course 
-router.get("/courses/:course_uuid", (request, response, next) => {
+router.get("/courses/:course_uuid", verify_user_token, (request, response, next) => {
 
     // SQL Prepared statements
     const qstring_get_course_info = `SELECT course_uuid, name, owner_email FROM table_courses WHERE course_uuid = ?`
@@ -217,7 +217,7 @@ router.get("/courses/:course_uuid", (request, response, next) => {
 
 
 // Enroll a user in a course 
-router.post("/courses/:course_uuid/enroll", (request, response, next) => {
+router.post("/courses/:course_uuid/enroll", verify_user_token, (request, response, next) => {
 
     //SQL prepared statements
     const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`
@@ -296,7 +296,7 @@ router.post("/courses/:course_uuid/enroll", (request, response, next) => {
 
 
 // Get all enrolled students for a course 
-router.get("/courses/:course_uuid/students", (request, response, next) => {
+router.get("/courses/:course_uuid/students", verify_user_token, (request, response, next) => {
     
     // SQL prepared statements
     const qstring_check_course_exists = `SELECT course_uuid FROM table_courses WHERE course_uuid = ?`
@@ -348,13 +348,13 @@ router.get("/courses/:course_uuid/students", (request, response, next) => {
 
 
 // Unenroll a user [NOT MVP]
-router.delete("/courses/:course_uuid/unenroll", (request, response, next) => {
+router.delete("/courses/:course_uuid/unenroll", verify_user_token, (request, response, next) => {
 
 })
 
 
 // Rename a course [NOT MVP]
-router.patch("/courses/:course_uuid", (request, response, next) => {
+router.patch("/courses/:course_uuid", verify_user_token, (request, response, next) => {
 
 })
 

@@ -5,7 +5,8 @@ const router = express.Router()
 const db = require("../db/db")
 const { v4: uuidv4 } = require("uuid")
 const bcrypt = require("bcrypt")
-const IMask = require("imask") // Import IMask
+const IMask = require("imask") 
+const { generate_user_token } = require("./jwt")
 const int_salt = 10
 
 router.get("/login", (request, response, next) => {
@@ -55,6 +56,9 @@ router.get("/login", (request, response, next) => {
             return response.status(401).json({ error: "Invalid email or password" })
         }
 
+        // generate jwt token, send user email
+        const string_token = generate_user_token(row.email)
+
         // email and password are valid and matched, update last_logged_in
         const timestamp = new Date().toISOString()
 
@@ -65,7 +69,7 @@ router.get("/login", (request, response, next) => {
                 return response.status(500).json({ error: "Failed to update last login" })
             }
 
-            return response.status(500).json({ error: "Failed to update last login" })
+            return response.status(200).json({ message: "Login successful", token: string_token })
         })
     })
 })
@@ -113,7 +117,6 @@ router.post("/register", (request, response, next) => {
     }
 
     // Phone validation 
-
     const phoneMask = IMask.createMask({
         mask: '+{1}(000) 000-0000'
     });
@@ -121,8 +124,6 @@ router.post("/register", (request, response, next) => {
     if (!formattedPhone || formattedPhone.length !== 16) {
         return response.status(400).json({ error: "Invalid phone number format. Expected format: +1(XXX) XXX-XXXX" });
     }
-
-    // TODO: IMPLEMENT THIS WHEN FIGURE OUT LIBRARY 
 
 
     // Discord Validation, can be empty 
@@ -147,7 +148,7 @@ router.post("/register", (request, response, next) => {
 
         // if this row exists, account with this email already is made
         if (row) {
-            return response.status(400).json({ error: "An account with this email already exists." })
+            return response.status(409).json({ error: "An account with this email already exists." })
         }
 
         // account doesnt exists, insert account information into the tables
@@ -164,7 +165,9 @@ router.post("/register", (request, response, next) => {
                     return response.status(500).json({ error: "Failed to insert into socials table" })
                 }
 
-                return response.status(200).json({ message: "Account created successfully" })
+                const string_token = generate_user_token(string_email)
+
+                return response.status(200).json({ message: "Account created successfully", token: string_token })
             })
         })
     })
