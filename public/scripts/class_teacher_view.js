@@ -1,7 +1,34 @@
 
 import { load_page } from "../app.js"
 
-export default function TeacherView() {
+export default async function TeacherView() {
+
+    const courseUuid = localStorage.getItem("selected_course_uuid");
+
+    if (!courseUuid) {
+        alert("Error: No class selected. Please go back to the dashboard and select a class.");
+        load_page("/dashboard");
+        return;
+    }
+
+    // Fetch class details from the backend
+    try {
+        const response = await fetch(`/api/courses/${courseUuid}`);
+        const result = await response.json();
+
+        if (response.ok) {
+            // Populate class details in the HTML
+            document.querySelector("#classTitle").textContent = `Class Name: ${result.course.name}`;
+            document.querySelector("#classSection").textContent = `Section: ${result.course.class_section}`;
+            document.querySelector("#classterm").textContent = `Term: ${result.course.class_term}`;
+        } else {
+            alert(result.error || "Failed to load class details.");
+            load_page("/dashboard");
+        }
+    } catch (error) {
+        alert("An error occurred while fetching class details.");
+        load_page("/dashboard");
+    }
 
     const array_peer_reviews = [
         { name: "Peer Assigment 1" },

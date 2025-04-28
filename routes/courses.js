@@ -44,7 +44,7 @@ router.get("/user/:email/courses/teaching", verify_user_token, (request, respons
                 return response.status(500).json({ error: "Failed to get teaching courses" })
             }
 
-            return response.status(200).json({ teaching_courses: rows })
+            return response.status(200).json({ teaching_courses: rows  || [] })
         })
     })
 })      
