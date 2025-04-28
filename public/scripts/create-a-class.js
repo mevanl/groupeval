@@ -38,7 +38,7 @@ export default function CreatingClass() {
         } else {
             const emailArray = studentEmails.split(",").map(email => email.trim());
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
+
             const invalidEmails = emailArray.filter(email => !emailRegex.test(email));
             if (invalidEmails.length > 0) {
                 blnError = true;
@@ -69,6 +69,7 @@ export default function CreatingClass() {
                     class_lable: classlable,
                     class_section: classSection,
                     class_term: classTerm,
+                    student_emails: studentEmails,
                 }),
             });
 
@@ -80,6 +81,12 @@ export default function CreatingClass() {
                     text: "Class Created Successfully",
                 }).then(() => {
                     load_page("/dashboard"); // Redirect to the dashboard
+                });
+            } else if (result.invalid_emails && result.invalid_emails.length > 0) {
+                // Handle invalid emails returned by the backend
+                Swal.fire({
+                    icon: "error",
+                    html: `<p>Some student emails are invalid or not registered:</p><p>${result.invalid_emails.join(", ")}</p>`,
                 });
             } else {
                 Swal.fire({

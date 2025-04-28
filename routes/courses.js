@@ -3,6 +3,15 @@ const router = express.Router()
 const db = require("../db/db")
 const { v4: uuidv4 } = require("uuid")
 const { verify_user_token } = require("./jwt")
+const nodemailer = require("nodemailer")
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "group.evaluation.do.no.reply@gmail.com", 
+        pass: "", // Place the APP PASSWORD here 
+    },
+})
 
 
 // get courses a user is teacher (owner) of
@@ -112,7 +121,7 @@ router.post("/courses", verify_user_token, (request, response, next) => {
     // Get request info
     const string_course_name = request.body.course_name?.trim()
     const string_owner_email = request.body.owner_email?.trim().toLowerCase()
-
+    const array_student_emails = request.body.student_emails?.split(",").map(email => email.trim().toLowerCase())
 
     // Validate request info 
     if (!string_course_name || string_course_name.length === 0) {
@@ -125,7 +134,7 @@ router.post("/courses", verify_user_token, (request, response, next) => {
     }
 
 
-    // check user exists
+    // check owner exists
     db.get(qstring_check_user_exists, [string_owner_email], (error, row) => {
         // db error
         if (error) {
@@ -133,7 +142,7 @@ router.post("/courses", verify_user_token, (request, response, next) => {
             return response.status(500).json({ error: "Error when validating email exists in DB" })
         }
 
-        // user doesnt exists
+        // owner doesnt exists
         if (!row) {
             return response.status(404).json({ error: "Owner email not found" })
         }
