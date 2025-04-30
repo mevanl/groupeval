@@ -2,36 +2,23 @@ import { load_page } from "../app.js";
 
 export default function CreatingClass() {
     document.querySelector("#button_submit").addEventListener("click", async function (e) {
+        e.preventDefault(); // Prevent default form submission behavior
+
         const className = document.querySelector("#txt_className").value.trim();
-        const classlable = document.querySelector("#txt_classLabel").value.trim();
-        const classSection = document.querySelector("#txt_classSection").value.trim();
-        const classTerm = document.querySelector("#txt_classterm").value.trim();
         const studentEmails = document.querySelector("#studentEmails").value.trim();
         const ownerEmail = localStorage.getItem("user_email"); // Get the owner's email from localStorage
+        const token = localStorage.getItem("auth_token"); // Get the auth token from localStorage
 
         let blnError = false;
         let strMessage = "";
 
+        // Validate class name
         if (className.length < 1) {
             blnError = true;
             strMessage += "<p class='mb-0 mt-0'>Must Have Class Name.</p>";
         }
 
-        if (classlable.length < 1) {
-            blnError = true;
-            strMessage += "<p class='mb-0 mt-0'>Class Must Have A Class Code.</p>";
-        }
-
-        if (classSection.length < 1) {
-            blnError = true;
-            strMessage += "<p class='mb-0 mt-0'>Class Must Have A Class Section.</p>";
-        }
-
-        if (classTerm.length < 1) {
-            blnError = true;
-            strMessage += "<p class='mb-0 mt-0'>Class Must Have A Class Term.</p>";
-        }
-
+        // Validate student emails
         if (studentEmails.length < 1) {
             blnError = true;
             strMessage += "<p class='mb-0 mt-0'>You must provide at least one student email.</p>";
@@ -46,12 +33,13 @@ export default function CreatingClass() {
             }
         }
 
+        // If validation errors exist, show an error message
         if (blnError) {
             console.log("Validation errors:", strMessage);
             Swal.fire({
                 icon: "error",
                 html: strMessage,
-                text: "Validation Error"
+                text: "Validation Error",
             });
             return;
         }
@@ -62,13 +50,11 @@ export default function CreatingClass() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Include the token in the request
                 },
                 body: JSON.stringify({
                     course_name: className,
                     owner_email: ownerEmail,
-                    class_lable: classlable,
-                    class_section: classSection,
-                    class_term: classTerm,
                     student_emails: studentEmails,
                 }),
             });
@@ -95,6 +81,7 @@ export default function CreatingClass() {
                 });
             }
         } catch (error) {
+            console.error("Error creating class:", error);
             Swal.fire({
                 icon: "error",
                 text: "An error occurred while creating the class",
@@ -102,6 +89,7 @@ export default function CreatingClass() {
         }
     });
 
+    // Handle cancel button click
     document.querySelector("#button_cancel").addEventListener("click", () => {
         load_page("/dashboard"); // Navigate back to the dashboard
     });

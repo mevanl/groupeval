@@ -4,6 +4,7 @@ export default function EnrollingClass() {
     document.querySelector("#button_submit").addEventListener("click", async function () {
         const txt_Code = document.querySelector("#txt_enrollmentCode").value.trim();
         const userEmail = localStorage.getItem("user_email"); // Get the user's email from localStorage
+        const token = localStorage.getItem("auth_token"); // Get the auth token from localStorage
         let blnError = false;
         let strMessage = "";
 
@@ -28,6 +29,7 @@ export default function EnrollingClass() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Include the token in the request
                 },
                 body: JSON.stringify({
                     user_email: userEmail,

@@ -42,13 +42,15 @@ export default function init() {
                 const result = await response.json();
 
                 if (response.ok) {
-
+                    // Save the token and email to localStorage
+                    localStorage.setItem("auth_token", result.token);
                     localStorage.setItem("user_email", string_username);
+
                     Swal.fire({
                         icon: "success",
                         text: "Login Confirmed"
                     }).then(() => {
-                        load_page("/dashboard");
+                        load_page("/dashboard"); // Redirect to the dashboard
                     });
                 } else {
                     Swal.fire({

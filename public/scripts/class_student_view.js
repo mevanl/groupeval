@@ -11,13 +11,17 @@ export default async function StudentView() {
 
     // Fetch class details from the backend
     try {
-        const response = await fetch(`/api/courses/${courseUuid}`);
+
+        const response = await fetch(`/api/courses/${courseUuid}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("auth_token")}`, // Replace "auth_token" with your token key
+            },
+        });
         const result = await response.json();
 
         if (response.ok) {
             // Populate class details in the HTML
             document.querySelector("#classTitle_student").textContent = `Class Name: ${result.course.name}`;
-            document.querySelector("#classterm_student").textContent = `Term: ${result.course.class_term}`;
             document.querySelector("#teacherInfo_student").textContent = `Teacher: ${result.course.teacher_firstname} ${result.course.teacher_lastname}`;
             document.querySelector("#teacherEmail_student").textContent = `Teacher Email: ${result.course.teacher_email}`;
             document.querySelector("#teacherPhone_student").textContent = `Teacher Phone Number: ${result.course.teacher_phone || "N/A"}`;

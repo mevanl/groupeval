@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "group.evaluation.do.no.reply@gmail.com", 
-        pass: "", // Place the APP PASSWORD here 
+        pass: "nzalvezfboltmbve", // Place the APP PASSWORD here 
     },
 })
 
@@ -111,118 +111,97 @@ router.get("/user/:email/courses/enrolled", verify_user_token, (request, respons
 
 // Create a new course, the user who creates is the owner/teacher
 router.post("/courses", verify_user_token, (request, response, next) => {
-
     // SQL Prepared statements
-    const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`
-    const qstring_check_unique_course_name_for_owner = `SELECT course_uuid FROM table_courses WHERE name = ? AND owner_email = ?`
-    const qstring_insert_new_course = `INSERT INTO table_courses (course_uuid, name, owner_email) VALUES (?, ?, ?)`
-
+    const qstring_check_user_exists = `SELECT email FROM table_users WHERE email = ?`;
+    const qstring_check_unique_course_name_for_owner = `SELECT course_uuid FROM table_courses WHERE name = ? AND owner_email = ?`;
+    const qstring_insert_new_course = `INSERT INTO table_courses (course_uuid, name, owner_email) VALUES (?, ?, ?)`;
 
     // Get request info
-    const string_course_name = request.body.course_name?.trim()
-    const string_owner_email = request.body.owner_email?.trim().toLowerCase()
-    const array_student_emails = request.body.student_emails?.split(",").map(email => email.trim().toLowerCase())
+    const string_course_name = request.body.course_name?.trim();
+    const string_owner_email = request.body.owner_email?.trim().toLowerCase();
+    const array_student_emails = request.body.student_emails?.split(",").map(email => email.trim().toLowerCase());
 
-    // Validate request info 
+    // Debugging: Log the request data
+    console.log("Request Body:", request.body);
+
+    // Validate request info
     if (!string_course_name || string_course_name.length === 0) {
-        return response.status(400).json({ error: "Course name cannot be empty" })
+        return response.status(400).json({ error: "Course name cannot be empty" });
     }
 
-    const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email_regex.test(string_owner_email)) {
-        return response.status(400).json({ error: "You must provide a valid email address for the course owner" })
+        return response.status(400).json({ error: "You must provide a valid email address for the course owner" });
     }
 
+    if (!array_student_emails || array_student_emails.length === 0 || !array_student_emails.every(email => email_regex.test(email))) {
+        return response.status(400).json({ error: "You must provide at least one valid student email address" });
+    }
 
-    // check owner exists
+    // Check if the owner exists
     db.get(qstring_check_user_exists, [string_owner_email], (error, row) => {
-        // db error
         if (error) {
-            console.error(error)
-            return response.status(500).json({ error: "Error when validating email exists in DB" })
+            console.error("Error checking owner existence:", error);
+            return response.status(500).json({ error: "Error when validating email exists in DB" });
         }
 
-        // owner doesnt exists
         if (!row) {
-            return response.status(404).json({ error: "Owner email not found" })
+            return response.status(404).json({ error: "Owner email not found" });
         }
 
-        // check course name is unique for a given owner's teaching courses 
+        // Check if the course name is unique for the owner
         db.get(qstring_check_unique_course_name_for_owner, [string_course_name, string_owner_email], (error, row) => {
-            // db error 
             if (error) {
-                console.error(error)
-                return response.status(500).json({ error: "Error when validating unique course in DB" })
+                console.error("Error checking unique course name:", error);
+                return response.status(500).json({ error: "Error when validating unique course in DB" });
             }
 
-            // if course not unique
             if (row) {
-                return response.status(409).json({ error: "You already own a course with this name" })
+                return response.status(409).json({ error: "You already own a course with this name" });
             }
 
-            // insert course 
-            const string_course_uuid = uuidv4()
+            // Insert the course
+            const string_course_uuid = uuidv4();
             db.run(qstring_insert_new_course, [string_course_uuid, string_course_name, string_owner_email], (error) => {
-                // db error
                 if (error) {
-                    console.error(error)
-                    return response.status(500).json({ error: "Database error when creating course" })
+                    console.error("Error inserting new course:", error);
+                    return response.status(500).json({ error: "Database error when creating course" });
                 }
 
-                return response.status(201).json({
-                    message: "Course created successfully",
-                    course: {
-                        name: string_course_name,
-                        course_uuid: string_course_uuid,
-                        owner_email: string_owner_email
-                    }
-                })
-            })
-        })
-    })
-})
+                // Send emails to students with the enrollment code
+                const emailPromises = array_student_emails.map(email => {
+                    const mailOptions = {
+                        from: "group.evaluation.do.no.reply@gmail.com",
+                        to: email,
+                        subject: "Class Enrollment Invitation",
+                        text: `You have been invited to join the class "${string_course_name}". Use the following code to enroll: ${string_course_uuid}`,
+                    };
 
+                    return transporter.sendMail(mailOptions);
+                });
 
-// Get info about specific course 
-router.get("/courses/:course_uuid", verify_user_token, (request, response, next) => {
-
-    // SQL Prepared statements
-    const qstring_get_course_info = `SELECT course_uuid, name, owner_email FROM table_courses WHERE course_uuid = ?`
-
-
-    // get request param course uuid
-    const string_course_uuid = request.params.course_uuid?.trim()
-
-
-    // Validate UUID 
-    const uuid_regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-    if (!uuid_regex.test(string_course_uuid)) {
-        return response.status(400).json({ error: "Invalid course UUID format" })
-    }
-
-
-    // get course info from db
-    db.get(qstring_get_course_info, [string_course_uuid], (error, row) => {
-        // db error
-        if (error) {
-            console.error(error)
-            return response.status(500).json({ error: "Database error when retrieving course info" })
-        }
-
-        // course not found 
-        if (!row) {
-            return response.status(404).json({ error: "Course not found" })
-        }
-
-        return response.status(200).json({
-            course: {
-                course_uuid: string_course_uuid,
-                name: row.name,
-                owner_email: row.owner_email
-            }
-        })
-    })
-})
+                Promise.all(emailPromises)
+                    .then(() => {
+                        return response.status(201).json({
+                            message: "Course created successfully. Emails sent to students with the enrollment code.",
+                            course: {
+                                name: string_course_name,
+                                course_uuid: string_course_uuid,
+                                owner_email: string_owner_email,
+                                students: array_student_emails,
+                            },
+                        });
+                    })
+                    .catch((emailError) => {
+                        console.error("Error sending emails:", emailError);
+                        return response.status(500).json({
+                            error: "Course created but failed to send emails to students",
+                        });
+                    });
+            });
+        });
+    });
+});
 
 
 // Enroll a user in a course 
@@ -354,6 +333,76 @@ router.get("/courses/:course_uuid/students", verify_user_token, (request, respon
         })
     })
 })
+
+
+router.get("/user/:email", (request, response, next) => {
+    const qstring_get_user_info = `
+        SELECT firstname, lastname 
+        FROM table_users 
+        WHERE email = ?
+    `;
+
+    const string_email = request.params.email?.trim().toLowerCase();
+
+    // Validate email format
+    const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email_regex.test(string_email)) {
+        return response.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Fetch user info
+    db.get(qstring_get_user_info, [string_email], (error, row) => {
+        if (error) {
+            console.error(error);
+            return response.status(500).json({ error: "Database error while fetching user info" });
+        }
+
+        if (!row) {
+            return response.status(404).json({ error: "User not found" });
+        }
+
+        return response.status(200).json({
+            firstname: row.firstname,
+            lastname: row.lastname,
+        });
+    });
+});
+
+router.get("/courses/:course_uuid", verify_user_token, (request, response, next) => {
+    const qstring_get_course_details = `
+    SELECT c.name, c.owner_email,
+           u.firstname AS teacher_firstname,
+           u.lastname AS teacher_lastname,
+           s.email AS teacher_email,
+           s.phone AS teacher_phone
+    FROM table_courses c
+    JOIN table_users u ON c.owner_email = u.email
+    JOIN table_socials s ON u.email = s.email
+    WHERE c.course_uuid = ?
+    `;
+
+    const string_course_uuid = request.params.course_uuid?.trim();
+
+    // Validate course UUID
+    const uuid_regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuid_regex.test(string_course_uuid)) {
+        return response.status(400).json({ error: "Invalid course UUID format" });
+    }
+
+    // Fetch course details
+    db.get(qstring_get_course_details, [string_course_uuid], (error, row) => {
+        if (error) {
+            console.error("Database error:", error);
+            return response.status(500).json({ error: "Database error while fetching course details" });
+        }
+
+        if (!row) {
+            return response.status(404).json({ error: "Course not found" });
+        }
+
+        return response.status(200).json({ course: row });
+    });
+});
 
 
 // Unenroll a user [NOT MVP]

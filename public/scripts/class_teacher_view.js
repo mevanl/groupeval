@@ -13,14 +13,17 @@ export default async function TeacherView() {
 
     // Fetch class details from the backend
     try {
-        const response = await fetch(`/api/courses/${courseUuid}`);
+        const response = await fetch(`/api/courses/${courseUuid}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("auth_token")}`, // Replace "auth_token" with your token key
+            },
+        });
         const result = await response.json();
 
         if (response.ok) {
             // Populate class details in the HTML
             document.querySelector("#classTitle").textContent = `Class Name: ${result.course.name}`;
-            document.querySelector("#classSection").textContent = `Section: ${result.course.class_section}`;
-            document.querySelector("#classterm").textContent = `Term: ${result.course.class_term}`;
+
         } else {
             alert(result.error || "Failed to load class details.");
             load_page("/dashboard");
