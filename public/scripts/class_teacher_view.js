@@ -33,6 +33,65 @@ export default async function TeacherView() {
         load_page("/dashboard");
     }
 
+    async function loadGroups() {
+        try {
+            const response = await fetch(`/api/courses/${courseUuid}/groups`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                },
+            });
+            const result = await response.json();
+    
+            if (response.ok) {
+                const groupsSection = document.querySelector("#groupsSection");
+                const groupsList = document.createElement("div");
+                groupsList.classList.add("d-flex", "flex-wrap", "gap-2", "mt-3");
+    
+                result.groups.forEach((group) => {
+                    const groupCard = document.createElement("div");
+                    groupCard.classList.add("card", "p-3", "border-primary", "mb-3");
+                    groupCard.style.cursor = "pointer";
+    
+                    groupCard.innerHTML = `
+                        <h5 class="card-title">${group.group_name}</h5>
+                    `;
+    
+                    groupCard.addEventListener("click", () => {
+                        localStorage.setItem("selected_group_uuid", group.group_uuid);
+                        localStorage.setItem("selected_group_name", group.group_name);
+                        load_page("/group_members");
+                    });
+    
+                    groupsList.appendChild(groupCard);
+                });
+    
+                // Clear and append the updated groups list
+                groupsSection.innerHTML = `
+                    <h3>Groups</h3>
+                    <button id="button_create_groups" class="btn btn-primary m-2" aria-label="Creates Groups">Create Groups</button>
+                `;
+                groupsSection.appendChild(groupsList);
+    
+                // Reattach the event listener for the "Create Groups" button
+                document.querySelector("#button_create_groups").addEventListener("click", () => {
+                    load_page("/create_group");
+                });
+            } else {
+                alert(result.error || "Failed to load groups.");
+            }
+        } catch (error) {
+            alert("An error occurred while fetching groups.");
+        }
+    }
+
+    // Load groups on page load
+    loadGroups();
+
+    // Go back to dashboard
+    document.querySelector("#button_to_dashboard").addEventListener("click", () => {
+        load_page("/dashboard");
+    });
+
     const array_peer_reviews = [
         { name: "Peer Assigment 1" },
         { name: "Peer Assigment 2" }
@@ -56,6 +115,10 @@ export default async function TeacherView() {
         peerreviewlist.appendChild(PeerReviwCard)
     });
 
+
+    document.querySelector("#button_create_groups").addEventListener("click", () => {
+        load_page("/create_group");
+    });
 
     // Go back to dashboard 
     document.querySelector("#button_to_dashboard").addEventListener("click", () => {

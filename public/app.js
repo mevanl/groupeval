@@ -11,6 +11,9 @@ const pages = {
     '/create_review': {html: 'pages/create_review.html', script: '/scripts/create_review.js' },
     '/example_peer': {html: 'pages/example_peer.html', script: '/scripts/example_peer.js' },
     '/class_student_view': { html: '/pages/class_student_view.html', script: '/scripts/class_student_view.js' },
+    '/create_group': { html: '/pages/create_group.html', script: '/scripts/create_group.js' },
+    '/join_group': { html: '/pages/join_group.html', script: '/scripts/join_group.js' },
+    '/group_members': { html: '/pages/group_member.html', script: '/scripts/group_member.js' }, // Correct route
 }
 
 
