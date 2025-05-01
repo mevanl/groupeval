@@ -52,19 +52,20 @@ CREATE TABLE table_group_membership (
 CREATE TABLE table_assessments (
   assessment_uuid TEXT PRIMARY KEY NOT NULL,
   course_uuid TEXT NOT NULL,
-  title TEXT NOT NULL,
-  date_created TIMESTAMP NOT NULL,
+  assessment_name TEXT NOT NULL,
+  date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ,
+  start_date TIMESTAMP NOT NULL,
   due_date TIMESTAMP NOT NULL,
-  questions_object TEXT, -- SQLite does not support JSON/object natively, so use TEXT
-  start_date TIMESTAMP,
-  end_date TIMESTAMP,
+  array_json_questions TEXT, -- SQLite does not support JSON/object natively, so use TEXT
   FOREIGN KEY (course_uuid) REFERENCES table_courses(course_uuid)
 );
 
-CREATE TABLE table_sessions (
+CREATE TABLE table_assessment_submissions (
+  submission_uuid TEXT PRIMARY KEY NOT NULL,
+  assessment_uuid TEXT NOT NULL,
   user_email TEXT NOT NULL,
-  start_datetime TIMESTAMP,
-  last_datetime TIMESTAMP,
-  status TEXT NOT NULL,
+  submission_json TEXT NOT NULL,
+  date_submitted TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY (assessment_uuid) REFERENCES table_assessments(assessment_uuid),
   FOREIGN KEY (user_email) REFERENCES table_users(email)
 );
