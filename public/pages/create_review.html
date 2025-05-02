@@ -7,7 +7,7 @@
         <h2 class="text-center">Metadata</h2>
 
         <!-- Form for Create Peer Review -->
-        <form class="mt-4">
+        <form class="mt-4" id="createReviewForm">
             <div class="mb-3">
                 <label for="txt_review_name" class="form-label">Peer Review Name</label>
                 <input type="text" class="form-control" id="txt_review_name" placeholder="Enter the review name"
@@ -19,9 +19,9 @@
                     aria-label="Start Date">
             </div>
             <div class="mb-3">
-                <label for="txt_end_date" class="form-label">End Date</label>
-                <input type="text" class="form-control" id="txt_end_date" placeholder="2025-04-12"
-                    aria-label="End data">
+                <label for="txt_due_date" class="form-label">Due Date</label>
+                <input type="text" class="form-control" id="txt_due_date" placeholder="2025-04-12"
+                    aria-label="Due data">
             </div>
 
             <div id="div_questions">
@@ -32,7 +32,7 @@
                 <!-- Create Question Button -->
                 <button type="button" class="btn btn-primary m-2" id="button_create_question">Create Question</button>
                 <!-- Submit Button -->
-                <button type="button" class="btn btn-primary m-2" id="button_submit">Finish Form</button>
+                <button type="submit" class="btn btn-primary m-2" id="button_submit">Finish Form</button>
             </div>
 
         </form>

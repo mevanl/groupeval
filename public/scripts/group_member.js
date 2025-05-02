@@ -67,4 +67,46 @@ export default async function GroupMembers() {
     } catch (error) {
         alert("An error occurred while fetching group members.");
     }
+
+    /*
+    // Fetch and display the group the student has joined
+    async function loadReviews() {
+        try {
+            const response = await fetch(`/api/courses/${courseUuid}/${userEmail}/group`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                },
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                const groupList = document.querySelector("#groupList__student");
+                groupList.innerHTML = `
+                    <div class="card p-3 border-primary mb-3" style="cursor: pointer;">
+                        <h5 class="card-title">${result.group.group_name}</h5>
+                    </div>
+                `;
+
+                // Add click event to the group card
+                const groupCard = groupList.querySelector(".card");
+                groupCard.addEventListener("click", () => {
+                    localStorage.setItem("selected_group_uuid", result.group.group_uuid);
+                    localStorage.setItem("selected_group_name", result.group.group_name);
+                    load_page("/group_members");
+                });
+            } else {
+                document.querySelector("#groupList__student").innerHTML = "<p>You are not part of any group yet.</p>";
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while fetching your group.",
+            });
+        }
+    }
+
+    loadGroup();
+*/
 }
