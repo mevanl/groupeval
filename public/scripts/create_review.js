@@ -23,9 +23,7 @@ export default function CreatePeerReview() {
                 public: questions.querySelector("#select_pub_pri").value,
                 question_type: questions.querySelector("#select_question_type").value,
                 question_name: questions.querySelector("#txt_question").value.trim(),
-                mcq_choices: Array.from(questions.querySelectorAll(".mcq_choices")).map((choice) => {
-                    return choice.value.trim();
-                })
+                mcq_choices: Array.from(document.querySelectorAll('[id^="response_"] input')).map(input => input.value.trim())
             }
         })
 

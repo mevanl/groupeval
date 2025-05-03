@@ -8,3 +8,6 @@ but i based my solution on its example code to create my load_html function foun
 
 4/21/25 - Mason
 I used chatGPT to create the .sql file for me after i create a create the DBML
+
+5/3/2025
+I used copilot to figure out how to query select values the increment in create_review
