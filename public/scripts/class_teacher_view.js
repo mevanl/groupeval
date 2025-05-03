@@ -116,7 +116,7 @@ export default async function TeacherView() {
                     reviewCard.addEventListener("click", () => {
                         localStorage.setItem("selected_review_uuid", assessment.assessment_uuid);
                         localStorage.setItem("selected_review_name", assessment.assessment_name);
-                        load_page("/example_peer");
+                        load_page("/review_teacher_view");
                     });
     
                     reviewList.appendChild(reviewCard);

@@ -78,7 +78,7 @@ export default function CreatePeerReview() {
                     title: "Success",
                     text: "Review created successfully!",
                 }).then(() => {
-                    load_page("/dashboard");
+                    load_page("/class_teacher_view");
                 });
             } else {
                 Swal.fire({
