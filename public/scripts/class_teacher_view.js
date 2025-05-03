@@ -92,29 +92,45 @@ export default async function TeacherView() {
         load_page("/dashboard");
     });
 
-    const array_peer_reviews = [
-        { name: "Peer Assigment 1" },
-        { name: "Peer Assigment 2" }
-    ]
+    async function loadReviews() {
+        try {
+            const response = await fetch(`/api/courses/${courseUuid}/assessments`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                },
+            });
+            const result = await response.json();
+    
+            if (response.ok) {
+                const reviewList = document.querySelector("#PeerReviewList");
 
-    const peerreviewlist = document.querySelector("#PeerReviewList")
-    array_peer_reviews.forEach((peerreview) => {
-        
-        // Add html
-        const PeerReviwCard = document.createElement("div");
-        PeerReviwCard.classList.add("card", "p-3", "border-primary", "mb-3");
- 
-        PeerReviwCard.innerHTML = `
-            <h5>${peerreview.name}</h5>
-        `
+                result.assessments.forEach((assessment) => {
+                    const reviewCard = document.createElement("div");
+                    reviewCard.classList.add("card", "p-3", "border-primary", "mb-3");
+                    reviewCard.style.cursor = "pointer";
+    
+                    reviewCard.innerHTML = `
+                        <h5 class="card-title">${assessment.assessment_name}</h5>
+                    `;
+    
+                    reviewCard.addEventListener("click", () => {
+                        localStorage.setItem("selected_review_uuid", assessment.assessment_uuid);
+                        localStorage.setItem("selected_review_name", assessment.assessment_name);
+                        load_page("/example_peer");
+                    });
+    
+                    reviewList.appendChild(reviewCard);
+                });
+            } else {
+                alert(result.error || "Failed to load reviews.");
+            }
+        } catch (error) {
+            alert("An error occurred while fetching reviews.");
+        }
+    }
 
-        PeerReviwCard.addEventListener("click", () => {
-            load_page("/example_peer") // Redirect to the teacher class page
-        })
- 
-        peerreviewlist.appendChild(PeerReviwCard)
-    });
-
+    // Load reviews on page load
+    loadReviews();
 
     document.querySelector("#button_create_groups").addEventListener("click", () => {
         load_page("/create_group");
