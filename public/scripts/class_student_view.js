@@ -82,4 +82,55 @@ export default async function StudentView() {
     document.querySelector("#button_to_dashboard_student").addEventListener("click", () => {
         load_page("/dashboard");
     });
+
+    async function loadPeerReview(){
+        try {
+            const response = await fetch(`/api/courses/${courseUuid}/assessments`,{ // assessments/assigned does not work
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                },
+            });
+
+            const result = await response.json();
+            // console.log(result);
+
+            if (response.ok) {
+                const reviewList = document.querySelector("#PeerReviewList__student");
+
+                result.assessments.forEach((assessment)=> { //loop to create a card for all assesments instead of just one, commented out original creation
+                    const reviewCard = document.createElement('div');
+                    reviewCard.classList.add("card", "p-3", "border-primary", "mb-3");
+                    reviewCard.style.cursor = "pointer";
+
+                    reviewCard.innerHTML = `
+                        <h5 class="card-title">${assessment.assessment_name}</h5>
+                    `;
+
+                    reviewCard.addEventListener("click", () => { //store the assessment uuid and name in local storarge
+                        localStorage.setItem("selected_review_uuid", assessment.assessment_uuid);
+                        localStorage.setItem("selected_review_name", assessment.assessment_name);
+                        load_page("/example_peer"); //loads the peer review page
+                    });
+                    reviewList.appendChild(reviewCard); //adds the card to the PeerReviewList__student div
+                })
+            //     reviewList.innerHTML = `
+            //         <div class="card p-3 border-primary mb-3" style="cursor: pointer;">
+            //             <h5 class="card-title">${result.assessments.assessment_name}</h5>
+            //         </div>`;
+            // // Add click event to the group card
+            // const reviewCard = reviewList.querySelector(".card");
+
+        } else {
+            document.querySelector("#PeerReviewList__student").innerHTML = "<p>Failed to load reviews.</p>"; // may switch to alert later
+        }
+    } catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while fetching peer reviews.",
+            });
+        }
+    }
+    
+    loadPeerReview();
 }
