@@ -314,7 +314,7 @@ router.get("/courses/:course_uuid/assessments/:assessment_uuid/submissions/:subm
 
         // no submission
         if (!submission_row) {
-            return response.status(404>).json({ error: "Submission not found" })
+            return response.status(404).json({ error: "Submission not found" })
         }
 
         // user is the one who submitted it
