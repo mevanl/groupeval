@@ -162,8 +162,8 @@ export default async function TeacherView() {
                     `;
     
                     submissionCard.addEventListener("click", () => {
-                        localStorage.setItem("selected_submission_uuid", assessment.assessment_uuid);
-                        localStorage.setItem("selected_submission_name", assessment.assessment_name);
+                        localStorage.setItem("selected_review_uuid", assessment.assessment_uuid);
+                        localStorage.setItem("selected_review_name", assessment.assessment_name);
                         load_page("/submission_teacher_view");
                     });
     
