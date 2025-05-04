@@ -14,8 +14,6 @@ export default async function initTeacherReview() {
 
     document.querySelector("#reviewTitle").textContent = `Review: ${assessmentName}`;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     try {
         const response = await fetch(`/api/courses/${courseUuid}/assessments`, {
             headers: {
@@ -73,8 +71,6 @@ export default async function initTeacherReview() {
     } catch (error) {
         alert("An error occurred while fetching review.");
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     document.querySelector("#button_cancel").addEventListener("click", () => {
         load_page("/class_teacher_view");

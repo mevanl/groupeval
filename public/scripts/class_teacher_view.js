@@ -87,11 +87,6 @@ export default async function TeacherView() {
     // Load groups on page load
     loadGroups();
 
-    // Go back to dashboard
-    document.querySelector("#button_to_dashboard").addEventListener("click", () => {
-        load_page("/dashboard");
-    });
-
     async function loadReviews() {
         try {
             const response = await fetch(`/api/courses/${courseUuid}/assessments`, {
@@ -131,6 +126,37 @@ export default async function TeacherView() {
 
     // Load reviews on page load
     loadReviews();
+    
+    async function loadSubmissions() {
+        try {
+            const response = await fetch(`/api/courses/${courseUuid}/assessments/submissions`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                },
+            });
+            const result = await response.json();
+    
+            if (response.ok) {
+                const reviewSubmissionsList = document.querySelector("#reviewSubmissionsList");
+
+                result.submissions.forEach((submission) => {
+
+                });
+            } else {
+                alert(result.error || "Failed to load submissions.");
+            }
+        } catch (error) {
+            alert("An error occurred while fetching submissions.");
+        }
+    }
+
+    // Load reviews on page load
+    loadSubmissions();
+
+    // Go back to dashboard
+    document.querySelector("#button_to_dashboard").addEventListener("click", () => {
+        load_page("/dashboard");
+    });
 
     document.querySelector("#button_create_groups").addEventListener("click", () => {
         load_page("/create_group");
