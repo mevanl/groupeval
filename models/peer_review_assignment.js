@@ -2,7 +2,7 @@ const object_peer_review_assignment = {
     name: "",
     start_date: "",
     due_date: "",
-    stauts: "", // open, closed, not open yet
+    status: "", // open, closed, not open yet
     questions: [],
     number_questions: 0,
 
