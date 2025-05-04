@@ -14,7 +14,8 @@ const pages = {
     '/class_student_view': { html: '/pages/class_student_view.html', script: '/scripts/class_student_view.js' },
     '/create_group': { html: '/pages/create_group.html', script: '/scripts/create_group.js' },
     '/join_group': { html: '/pages/join_group.html', script: '/scripts/join_group.js' },
-    '/group_members': { html: '/pages/group_member.html', script: '/scripts/group_member.js' }, // Correct route
+    '/group_members': { html: '/pages/group_member.html', script: '/scripts/group_member.js' }, 
+    '/submission_teacher_view' : { html: '/pages/submission_teacher_view.html', script: '/scripts/submission_teacher_view.js' },
 }
 
 

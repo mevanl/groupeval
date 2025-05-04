@@ -33,6 +33,9 @@ export default async function TeacherView() {
         load_page("/dashboard");
     }
 
+    // Load Groups
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     async function loadGroups() {
         try {
             const response = await fetch(`/api/courses/${courseUuid}/groups`, {
@@ -87,6 +90,11 @@ export default async function TeacherView() {
     // Load groups on page load
     loadGroups();
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Load Reviews
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     async function loadReviews() {
         try {
             const response = await fetch(`/api/courses/${courseUuid}/assessments`, {
@@ -126,10 +134,15 @@ export default async function TeacherView() {
 
     // Load reviews on page load
     loadReviews();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    // Load Submissions
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     async function loadSubmissions() {
         try {
-            const response = await fetch(`/api/courses/${courseUuid}/assessments/submissions`, {
+            const response = await fetch(`/api/courses/${courseUuid}/assessments`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
                 },
@@ -137,10 +150,24 @@ export default async function TeacherView() {
             const result = await response.json();
     
             if (response.ok) {
-                const reviewSubmissionsList = document.querySelector("#reviewSubmissionsList");
+                const submissionList = document.querySelector("#reviewSubmissionsList");
 
-                result.submissions.forEach((submission) => {
-
+                result.assessments.forEach((assessment) => {
+                    const submissionCard = document.createElement("div");
+                    submissionCard.classList.add("card", "p-3", "border-primary", "mb-3");
+                    submissionCard.style.cursor = "pointer";
+    
+                    submissionCard.innerHTML = `
+                        <h5 class="card-title">${assessment.assessment_name}</h5>
+                    `;
+    
+                    submissionCard.addEventListener("click", () => {
+                        localStorage.setItem("selected_submission_uuid", assessment.assessment_uuid);
+                        localStorage.setItem("selected_submission_name", assessment.assessment_name);
+                        load_page("/submission_teacher_view");
+                    });
+    
+                    submissionList.appendChild(submissionCard);
                 });
             } else {
                 alert(result.error || "Failed to load submissions.");
@@ -152,6 +179,8 @@ export default async function TeacherView() {
 
     // Load reviews on page load
     loadSubmissions();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Go back to dashboard
     document.querySelector("#button_to_dashboard").addEventListener("click", () => {
