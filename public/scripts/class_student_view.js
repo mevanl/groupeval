@@ -109,7 +109,7 @@ export default async function StudentView() {
                     reviewCard.addEventListener("click", () => { //store the assessment uuid and name in local storarge
                         localStorage.setItem("selected_review_uuid", assessment.assessment_uuid);
                         localStorage.setItem("selected_review_name", assessment.assessment_name);
-                        load_page("/example_peer"); //loads the peer review page
+                        load_page("/review_student_view"); //loads the correct review page for students
                     });
                     reviewList.appendChild(reviewCard); //adds the card to the PeerReviewList__student div
                 })

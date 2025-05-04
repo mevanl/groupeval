@@ -10,6 +10,7 @@ const pages = {
     '/class_teacher_view': { html: '/pages/class_teacher_view.html', script: '/scripts/class_teacher_view.js' },
     '/create_review': {html: 'pages/create_review.html', script: '/scripts/create_review.js' },
     '/review_teacher_view': {html: 'pages/review_teacher_view.html', script: '/scripts/review_teacher_view.js' },
+    '/review_student_view': {html: 'pages/review_student_view.html', script: '/scripts/review_student_view.js' },
     '/class_student_view': { html: '/pages/class_student_view.html', script: '/scripts/class_student_view.js' },
     '/create_group': { html: '/pages/create_group.html', script: '/scripts/create_group.js' },
     '/join_group': { html: '/pages/join_group.html', script: '/scripts/join_group.js' },

@@ -301,18 +301,20 @@ router.post("/courses/:course_uuid/assessments/:assessment_uuid/submit", verify_
     // SQL Prepared statements
     const qstring_submit_assessment = `
         INSERT INTO table_assessment_submissions
-        (submission_uuid, assessment_uuid, user_email, submission_json)
-        VALUES (?, ?, ?, ?)
+        (submission_uuid, assessment_uuid, user_email, submission_json, date_submitted)
+        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
     `
+    // ^ unsure if date_submitted was missed here or meant to be added later, check back later to test
 
     // request info
     const string_course_uuid = request.params.course_uuid?.trim()
     const string_assessment_uuid = request.params.assessment_uuid?.trim()
     const { submission_json } = request.body
     const user_email = request.user?.email
+    //const date_submitted = new Date().toISOString().replace("Z", ""); Check back later on this
 
     // validate request
-    if (!string_course_uuid || !string_assessment_uuid || !submission_json || !user_email) {
+    if (!string_course_uuid || !string_assessment_uuid || !submission_json || !user_email || !date_submitted) { //check back to see if date_submitted is correct
         return response.status(400).json({ error: "Missing required fields for submission" })
     }
 
@@ -324,7 +326,8 @@ router.post("/courses/:course_uuid/assessments/:assessment_uuid/submit", verify_
         submission_uuid,
         string_assessment_uuid,
         user_email,
-        JSON.stringify(submission_json)
+        JSON.stringify(submission_json),
+        // date_submitted check back later on this
     ], function (error) {
         if (error) {
             console.error(error)
