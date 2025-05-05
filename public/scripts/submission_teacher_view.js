@@ -86,7 +86,15 @@ async function setGroupMembers(group_uuid) {
         },
     });
 
+    const submissionResponse = await fetch(`/api/courses/${group_uuid}/assessments/submissions`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+    });
+
     const membersResult = await membersResponse.json();
+    const submissionResult = await submissionResponse.json();
+    //console.log(submissionResult);
 
     if (membersResponse.ok) {
         const membersSection = document.querySelector("#membersSection");
@@ -115,7 +123,7 @@ async function setGroupMembers(group_uuid) {
                 memberCard.style.border = "2px solid #007bff";
                 memberCard.style.backgroundColor = "#e7f0ff";
 
-                //createSubmissions(memberCard.group_uuid);
+                createSubmissions(memberCard.group_uuid);
             });
 
      
@@ -132,7 +140,7 @@ async function setGroupMembers(group_uuid) {
     }
 }
 
-async function createSubmission(group_uuid) {
+async function createSubmission(submission_uuid) {
     const submissionSection = document.querySelector("#submissionSection");
     submissionsSection.innerHTML = "";
     const submissionsList = document.createElement("div");

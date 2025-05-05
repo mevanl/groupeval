@@ -107,11 +107,10 @@ export default async function initStudentReview() {
                     Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
                 },
                 body: JSON.stringify({
-                    string_course_uuid: submission_uuid,
-                    assessment_uuid: assessmentUuid,
-                    user_email: userEmail,
+                    string_course_uuid: courseUuid,
+                    string_assessment_uuid: assessmentUuid,
                     submission_json: JSON.stringify(reviewAnswers),
-                    date_submitted: new Date().toISOString(),
+                    user_email: userEmail,
                 }),
             });
 

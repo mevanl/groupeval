@@ -359,16 +359,20 @@ router.post("/courses/:course_uuid/assessments/:assessment_uuid/submit", verify_
     `
     // ^ unsure if date_submitted was missed here or meant to be added later, check back later to test
 
-    // request info
-    const string_course_uuid = request.params.course_uuid?.trim()
-    const string_assessment_uuid = request.params.assessment_uuid?.trim()
-    const { submission_json } = request.body
-    const user_email = request.user?.email
-    //const date_submitted = new Date().toISOString().replace("Z", ""); Check back later on this
+    const { string_course_uuid, string_assessment_uuid, submission_json, user_email } = request.body
 
     // validate request
-    if (!string_course_uuid || !string_assessment_uuid || !submission_json || !user_email || !date_submitted) { //check back to see if date_submitted is correct
-        return response.status(400).json({ error: "Missing required fields for submission" })
+    if (!string_course_uuid) { //check back to see if date_submitted is correct
+        return response.status(400).json({ error: "Course Uuid" })
+    }
+    if (!string_assessment_uuid) { //check back to see if date_submitted is correct
+        return response.status(400).json({ error: "Assessment" })
+    }
+    if (!submission_json) { //check back to see if date_submitted is correct
+        return response.status(400).json({ error: "Submission Json" })
+    }
+    if (!user_email) { //check back to see if date_submitted is correct
+        return response.status(400).json({ error: "Email" })
     }
 
     // create uuid
