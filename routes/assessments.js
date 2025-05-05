@@ -279,7 +279,7 @@ router.get("/courses/:course_uuid/assessments/submissions", verify_user_token, (
 
 
 // get specific submission (USER MUST BE OWNER OF THE COURSE, UNLESS ITS YOUR SUBMISSION)
-router.get("/courses/:course_uuid/assessments/:assessment_uuid/submissions/:submission_uuid", verify_user_token, (request, response, next) => {
+router.get("/courses/:course_uuid/assessments/submissions/:submission_uuid", verify_user_token, (request, response, next) => {
 
     // SQL prepared statement
     const qstring_get_submission = `

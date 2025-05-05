@@ -49,7 +49,7 @@ export default async function initTeacherReview() {
                         groupCard.style.border = "2px solid #007bff";
                         groupCard.style.backgroundColor = "#e7f0ff";
 
-                        setGroupMembers(group.group_uuid);
+                        setGroupMembers(group.group_uuid, courseUuid);
                     });
 
     
@@ -78,7 +78,7 @@ export default async function initTeacherReview() {
     });
 }
 
-async function setGroupMembers(group_uuid) {
+async function setGroupMembers(group_uuid, course_uuid) {
 
     const membersResponse = await fetch(`/api/groups/${group_uuid}/members`, {
         headers: {
@@ -86,7 +86,7 @@ async function setGroupMembers(group_uuid) {
         },
     });
 
-    const submissionResponse = await fetch(`/api/courses/${group_uuid}/assessments/submissions`, {
+    const submissionResponse = await fetch(`/api/courses/${course_uuid}/assessments/submissions`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         },
@@ -94,7 +94,6 @@ async function setGroupMembers(group_uuid) {
 
     const membersResult = await membersResponse.json();
     const submissionResult = await submissionResponse.json();
-    //console.log(submissionResult);
 
     if (membersResponse.ok) {
         const membersSection = document.querySelector("#membersSection");
@@ -110,6 +109,8 @@ async function setGroupMembers(group_uuid) {
             memberCard.innerHTML = `
                 <h5 class="card-title">${member.full_name}</h5>
             `;
+
+            const submission_uuid = submissionResult.submissions.find(submission => submission.user_email == member.email)?.submission_uuid;
     
             memberCard.addEventListener("click", () => {
 
@@ -123,7 +124,8 @@ async function setGroupMembers(group_uuid) {
                 memberCard.style.border = "2px solid #007bff";
                 memberCard.style.backgroundColor = "#e7f0ff";
 
-                createSubmissions(memberCard.group_uuid);
+
+                createSubmission(course_uuid, submission_uuid);
             });
 
      
@@ -140,11 +142,35 @@ async function setGroupMembers(group_uuid) {
     }
 }
 
-async function createSubmission(submission_uuid) {
+async function createSubmission(course_uuid, submission_uuid) {
     const submissionSection = document.querySelector("#submissionSection");
-    submissionsSection.innerHTML = "";
+    submissionSection.innerHTML = "";
     const submissionsList = document.createElement("div");
     submissionsList.classList.add("d-flex", "flex-wrap", "gap-2", "mt-3");
 
+///courses/:course_uuid/assessments/:assessment_uuid/public_submissions
+    const submissionResponse = await fetch(`courses/${course_uuid}/assessments/submissions/${submission_uuid}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+    });
 
+    const assessmentResponse = await fetch(`/api/courses/${course_uuid}/assessments`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+    });
+
+    const submissionResult = await submissionResponse.json();
+    const assessmentResult = await assessmentResponse.json();
+
+    if(assessmentResponse.ok) {
+
+        //const assessment = assessmentResult.assessments.find(assessment => submissionResult.assessment_uuid == assessment.assessment_uuid);
+        //console.log(assessment)
+        
+    }
+    else {
+        alert(result.error || "Failed to load submissions.");
+    }
 }
