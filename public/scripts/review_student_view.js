@@ -117,7 +117,10 @@ export default async function initStudentReview() {
             const result = await response.json();
 
             if (response.ok) {
-                alert("Review submitted successfully!");
+                Swal.fire({
+                    icon: "success",
+                    text: "Review has been submitted successfully.",
+                })
                 load_page("/class_student_view");
             } else {
                 alert(result.error || "Failed to submit review.");
